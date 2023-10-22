@@ -1,0 +1,22 @@
+[package]
+name = "serde-html"
+version = "0.0.0"
+authors = ["Aster <192607617@qq.com>"]
+description = "Strong typed html with serde support"
+repository = "https://github.com/oovm/sub_projects"
+documentation = "https://docs.rs/serde-html"
+readme = "readme.md"
+license = "MPL-2.0"
+edition = "2021"
+exclude = ["package.json", "tests/**"]
+
+[dependencies]
+num-traits = "0.2.17"
+
+[dev-dependencies]
+
+[features]
+default = []
+
+[package.metadata.docs.rs]
+all-features = true
