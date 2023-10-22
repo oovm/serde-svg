@@ -1,9 +1,9 @@
 [package]
-name = "xhtml"
+name = "serde-html"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "Strong typed html with serde support"
-repository = "https://github.com/oovm/sub_projects"
+repository = "https://github.com/oovm/serde-html"
 documentation = "https://docs.rs/serde-html"
 readme = "readme.md"
 license = "MPL-2.0"
@@ -11,6 +11,8 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
+serde = { version = "1.0.189", features = ["derive"] }
+indexmap = "2.0.2"
 
 
 [dev-dependencies]

@@ -62,7 +62,18 @@ impl From<i32> for AttributeValue {
 
 impl From<i64> for AttributeValue {
     fn from(value: i64) -> Self {
-        Self::Integer(value as i64)
+        Self::Integer(value)
     }
 }
 
+impl From<f32> for AttributeValue {
+    fn from(value: f32) -> Self {
+        Self::Decimal(value as f64)
+    }
+}
+
+impl From<f64> for AttributeValue {
+    fn from(value: f64) -> Self {
+        Self::Decimal(value)
+    }
+}
