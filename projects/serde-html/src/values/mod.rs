@@ -3,6 +3,7 @@ mod from;
 /// Values for attributes
 ///
 /// Essentially a string, but using enum to reduce unnecessary allocation
+#[derive(Debug)]
 pub enum AttributeValue {
     /// This attribute exists, but no value is set
     Empty,
