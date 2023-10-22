@@ -1,12 +1,11 @@
 [package]
-name = "sub_projects"
-publish = false
+name = "serde-svg"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
-description = "..."
+description = "Strong typed svg with serde support"
 repository = "https://github.com/oovm/sub_projects"
-documentation = "https://docs.rs/sub_projects"
-readme = "Readme.md"
+documentation = "https://docs.rs/serde-svg"
+readme = "readme.md"
 license = "MPL-2.0"
 edition = "2021"
 exclude = ["package.json", "tests/**"]
