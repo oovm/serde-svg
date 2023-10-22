@@ -1,6 +1,8 @@
+///
 #[derive(Debug, Copy, Clone)]
-pub enum Error {
+pub enum HtmlError {
+    ///
     UnknownError
 }
-
-pub type Result<T> = std::result::Result<T, Error>;
+///
+pub type Result<T> = std::result::Result<T, HtmlError>;
