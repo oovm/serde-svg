@@ -1,0 +1,36 @@
+package wasi: serde@0.2.0;
+
+world imports {
+    export errors;
+    export serialize;
+}
+
+interface errors {
+    record custom-error {
+        message: string,
+    }
+    variant serialize-error {
+        custom(custom-error),
+    }
+}
+
+interface serialize {
+    use errors.{serialize-error};
+    resource serializer {
+        serialize-s8: func(value: s8) -> result<_, serialize-error>;
+        serialize-s16: func(value: s16) -> result<_, serialize-error>;
+        serialize-s32: func(value: s32) -> result<_, serialize-error>;
+        serialize-s64: func(value: s64) -> result<_, serialize-error>;
+        serialize-u8: func(value: u8) -> result<_, serialize-error>;
+        serialize-u16: func(value: u16) -> result<_, serialize-error>;
+        serialize-u32: func(value: u32) -> result<_, serialize-error>;
+        serialize-u64: func(value: u64) -> result<_, serialize-error>;
+        serialize-f32: func(value: f32) -> result<_, serialize-error>;
+        serialize-f64: func(value: f64) -> result<_, serialize-error>;
+        serialize-bool: func(value: bool) -> result<_, serialize-error>;
+        serialize-char: func(value: char) -> result<_, serialize-error>;
+        serialize-bytes: func(value: list<u8>) -> result<_, serialize-error>;
+        serialize-string: func(value: string) -> result<_, serialize-error>;
+
+    }
+}
