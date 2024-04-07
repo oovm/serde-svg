@@ -2,1186 +2,3459 @@
 // Options used:
 #[allow(dead_code)]
 pub mod exports {
-  #[allow(dead_code)]
-  pub mod wasi {
     #[allow(dead_code)]
-    pub mod serde {
-      #[allow(dead_code, clippy::all)]
-      pub mod errors {
-        #[used]
-        #[doc(hidden)]
-        #[cfg(target_arch = "wasm32")]
-        static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
-        use super::super::super::super::_rt;
-        #[derive(Clone)]
-        pub struct CustomError {
-          pub message: _rt::String,
-        }
-        impl ::core::fmt::Debug for CustomError {
-          fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-            f.debug_struct("CustomError").field("message", &self.message).finish()
-          }
-        }
-        #[derive(Clone)]
-        pub enum SerializeError {
-          Custom(CustomError),
-        }
-        impl ::core::fmt::Debug for SerializeError {
-          fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-            match self {
-              SerializeError::Custom(e) => {
-                f.debug_tuple("SerializeError::Custom").field(e).finish()
-              }
-            }
-          }
-        }
-        impl ::core::fmt::Display for SerializeError {
-          fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-            write!(f, "{:?}", self)
-          }
-        }
+    pub mod wasi {
+        #[allow(dead_code)]
+        pub mod image {
+            #[allow(dead_code, clippy::all)]
+            pub mod errors {
+                #[used]
+                #[doc(hidden)]
+                #[cfg(target_arch = "wasm32")]
+                static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
 
-        impl std::error::Error for SerializeError {}
-        #[doc(hidden)]
+                use super::super::super::super::_rt;
 
-        macro_rules! __export_wasi_serde_errors_0_2_0_cabi{
+                #[derive(Clone)]
+                pub struct EncodeError {
+                    pub message: _rt::String,
+                }
+
+                impl ::core::fmt::Debug for EncodeError {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        f.debug_struct("EncodeError").field("message", &self.message).finish()
+                    }
+                }
+
+                #[derive(Clone)]
+                pub struct DecodeError {
+                    pub message: _rt::String,
+                }
+
+                impl ::core::fmt::Debug for DecodeError {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        f.debug_struct("DecodeError").field("message", &self.message).finish()
+                    }
+                }
+
+                #[derive(Clone)]
+                pub struct InvalidOperation {
+                    pub operation: _rt::String,
+                    pub reason: _rt::String,
+                }
+
+                impl ::core::fmt::Debug for InvalidOperation {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        f.debug_struct("InvalidOperation").field("operation", &self.operation).field("reason", &self.reason).finish()
+                    }
+                }
+
+                #[derive(Clone)]
+                pub struct CustomError {
+                    pub message: _rt::String,
+                }
+
+                impl ::core::fmt::Debug for CustomError {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        f.debug_struct("CustomError").field("message", &self.message).finish()
+                    }
+                }
+
+                #[derive(Clone)]
+                pub enum ImageError {
+                    Encode(EncodeError),
+                    Decode(DecodeError),
+                    Operation(InvalidOperation),
+                    Custom(CustomError),
+                }
+
+                impl ::core::fmt::Debug for ImageError {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        match self {
+                            ImageError::Encode(e) => {
+                                f.debug_tuple("ImageError::Encode").field(e).finish()
+                            }
+                            ImageError::Decode(e) => {
+                                f.debug_tuple("ImageError::Decode").field(e).finish()
+                            }
+                            ImageError::Operation(e) => {
+                                f.debug_tuple("ImageError::Operation").field(e).finish()
+                            }
+                            ImageError::Custom(e) => {
+                                f.debug_tuple("ImageError::Custom").field(e).finish()
+                            }
+                        }
+                    }
+                }
+
+                impl ::core::fmt::Display for ImageError {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        write!(f, "{:?}", self)
+                    }
+                }
+
+                impl std::error::Error for ImageError {}
+                #[doc(hidden)]
+
+                macro_rules! __export_wasi_image_errors_0_2_1_draft_cabi {
           ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
 
           };);
         }
-        #[doc(hidden)]
-        pub(crate) use __export_wasi_serde_errors_0_2_0_cabi;
-
-      }
-
-      #[allow(dead_code, clippy::all)]
-      pub mod serialize {
-        #[used]
-        #[doc(hidden)]
-        #[cfg(target_arch = "wasm32")]
-        static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
-        use super::super::super::super::_rt;
-        pub type SerializeError = super::super::super::super::exports::wasi::serde::errors::SerializeError;
-
-        #[derive(Debug)]
-        #[repr(transparent)]
-        pub struct Serializer{
-          handle: _rt::Resource<Serializer>,
-        }
-
-        type _SerializerRep<T> = Option<T>;
-
-        impl Serializer{
-          /// Creates a new resource from the specified representation.
-          ///
-          /// This function will create a new resource handle by moving `val` onto
-          /// the heap and then passing that heap pointer to the component model to
-          /// create a handle. The owned handle is then returned as `Serializer`.
-          pub fn new<T: GuestSerializer>(val: T) -> Self {
-            Self::type_guard::<T>();
-            let val: _SerializerRep<T> = Some(val);
-            let ptr: *mut _SerializerRep<T> =
-            _rt::Box::into_raw(_rt::Box::new(val));
-            unsafe {
-              Self::from_handle(T::_resource_new(ptr.cast()))
+                #[doc(hidden)]
+                pub(crate) use __export_wasi_image_errors_0_2_1_draft_cabi;
             }
-          }
 
-          /// Gets access to the underlying `T` which represents this resource.
-          pub fn get<T: GuestSerializer>(&self) -> &T {
-            let ptr = unsafe { &*self.as_ptr::<T>() };
-            ptr.as_ref().unwrap()
-          }
+            #[allow(dead_code, clippy::all)]
+            pub mod types {
+                #[used]
+                #[doc(hidden)]
+                #[cfg(target_arch = "wasm32")]
+                static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
 
-          /// Gets mutable access to the underlying `T` which represents this
-          /// resource.
-          pub fn get_mut<T: GuestSerializer>(&mut self) -> &mut T {
-            let ptr = unsafe { &mut *self.as_ptr::<T>() };
-            ptr.as_mut().unwrap()
-          }
+                use super::super::super::super::_rt;
 
-          /// Consumes this resource and returns the underlying `T`.
-          pub fn into_inner<T: GuestSerializer>(self) -> T {
-            let ptr = unsafe { &mut *self.as_ptr::<T>() };
-            ptr.take().unwrap()
-          }
+                pub type ImageError = super::super::super::super::exports::wasi::image::errors::ImageError;
 
-          #[doc(hidden)]
-          pub unsafe fn from_handle(handle: u32) -> Self {
-            Self {
-              handle: _rt::Resource::from_handle(handle),
-            }
-          }
+                #[repr(u8)]
+                #[derive(Clone, Copy, Eq, PartialEq)]
+                pub enum PixelFormat {
+                    Luma8,
+                    LumaA8,
+                    Luma16,
+                    LumaA16,
+                    Luma32,
+                    LumaA32,
+                    Rgb8,
+                    Rgb556,
+                    Rgba8,
+                    Rgb16,
+                    Rgba16,
+                    Rgb32,
+                    Rgba32,
+                }
 
-          #[doc(hidden)]
-          pub fn take_handle(&self) -> u32 {
-            _rt::Resource::take_handle(&self.handle)
-          }
+                impl ::core::fmt::Debug for PixelFormat {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        match self {
+                            PixelFormat::Luma8 => {
+                                f.debug_tuple("PixelFormat::Luma8").finish()
+                            }
+                            PixelFormat::LumaA8 => {
+                                f.debug_tuple("PixelFormat::LumaA8").finish()
+                            }
+                            PixelFormat::Luma16 => {
+                                f.debug_tuple("PixelFormat::Luma16").finish()
+                            }
+                            PixelFormat::LumaA16 => {
+                                f.debug_tuple("PixelFormat::LumaA16").finish()
+                            }
+                            PixelFormat::Luma32 => {
+                                f.debug_tuple("PixelFormat::Luma32").finish()
+                            }
+                            PixelFormat::LumaA32 => {
+                                f.debug_tuple("PixelFormat::LumaA32").finish()
+                            }
+                            PixelFormat::Rgb8 => {
+                                f.debug_tuple("PixelFormat::Rgb8").finish()
+                            }
+                            PixelFormat::Rgb556 => {
+                                f.debug_tuple("PixelFormat::Rgb556").finish()
+                            }
+                            PixelFormat::Rgba8 => {
+                                f.debug_tuple("PixelFormat::Rgba8").finish()
+                            }
+                            PixelFormat::Rgb16 => {
+                                f.debug_tuple("PixelFormat::Rgb16").finish()
+                            }
+                            PixelFormat::Rgba16 => {
+                                f.debug_tuple("PixelFormat::Rgba16").finish()
+                            }
+                            PixelFormat::Rgb32 => {
+                                f.debug_tuple("PixelFormat::Rgb32").finish()
+                            }
+                            PixelFormat::Rgba32 => {
+                                f.debug_tuple("PixelFormat::Rgba32").finish()
+                            }
+                        }
+                    }
+                }
 
-          #[doc(hidden)]
-          pub fn handle(&self) -> u32 {
-            _rt::Resource::handle(&self.handle)
-          }
+                impl PixelFormat {
+                    pub(crate) unsafe fn _lift(val: u8) -> PixelFormat {
+                        if !cfg!(debug_assertions) {
+                            return ::core::mem::transmute(val);
+                        }
 
-          // It's theoretically possible to implement the `GuestSerializer` trait twice
-          // so guard against using it with two different types here.
-          #[doc(hidden)]
-          fn type_guard<T: 'static>() {
-            use core::any::TypeId;
-            static mut LAST_TYPE: Option<TypeId> = None;
-            unsafe {
-              assert!(!cfg!(target_feature = "threads"));
-              let id = TypeId::of::<T>();
-              match LAST_TYPE {
-                Some(ty) => assert!(ty == id, "cannot use two types with this resource type"),
-                None => LAST_TYPE = Some(id),
-              }
-            }
-          }
+                        match val {
+                            0 => PixelFormat::Luma8,
+                            1 => PixelFormat::LumaA8,
+                            2 => PixelFormat::Luma16,
+                            3 => PixelFormat::LumaA16,
+                            4 => PixelFormat::Luma32,
+                            5 => PixelFormat::LumaA32,
+                            6 => PixelFormat::Rgb8,
+                            7 => PixelFormat::Rgb556,
+                            8 => PixelFormat::Rgba8,
+                            9 => PixelFormat::Rgb16,
+                            10 => PixelFormat::Rgba16,
+                            11 => PixelFormat::Rgb32,
+                            12 => PixelFormat::Rgba32,
 
-          #[doc(hidden)]
-          pub unsafe fn dtor<T: 'static>(handle: *mut u8) {
-            Self::type_guard::<T>();
-            let _ = _rt::Box::from_raw(handle as *mut _SerializerRep<T>);
-          }
+                            _ => panic!("invalid enum discriminant"),
+                        }
+                    }
+                }
 
-          fn as_ptr<T: GuestSerializer>(&self) -> *mut _SerializerRep<T> {
-            Serializer::type_guard::<T>();
-            T::_resource_rep(self.handle()).cast()
-          }
-        }
+                #[repr(u8)]
+                #[derive(Clone, Copy, Eq, PartialEq)]
+                pub enum ImageDevice {
+                    Cpu,
+                    Gpu,
+                }
 
-        /// A borrowed version of [`Serializer`] which represents a borrowed value
-        /// with the lifetime `'a`.
-        #[derive(Debug)]
-        #[repr(transparent)]
-        pub struct SerializerBorrow<'a> {
-          rep: *mut u8,
-          _marker: core::marker::PhantomData<&'a Serializer>,
-        }
+                impl ::core::fmt::Debug for ImageDevice {
+                    fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                        match self {
+                            ImageDevice::Cpu => {
+                                f.debug_tuple("ImageDevice::Cpu").finish()
+                            }
+                            ImageDevice::Gpu => {
+                                f.debug_tuple("ImageDevice::Gpu").finish()
+                            }
+                        }
+                    }
+                }
 
-        impl<'a> SerializerBorrow<'a>{
-          #[doc(hidden)]
-          pub unsafe fn lift(rep: usize) -> Self {
-            Self {
-              rep: rep as *mut u8,
-              _marker: core::marker::PhantomData,
-            }
-          }
+                impl ImageDevice {
+                    pub(crate) unsafe fn _lift(val: u8) -> ImageDevice {
+                        if !cfg!(debug_assertions) {
+                            return ::core::mem::transmute(val);
+                        }
 
-          /// Gets access to the underlying `T` in this resource.
-          pub fn get<T: GuestSerializer>(&self) -> &T {
-            let ptr = unsafe { &mut *self.as_ptr::<T>() };
-            ptr.as_ref().unwrap()
-          }
+                        match val {
+                            0 => ImageDevice::Cpu,
+                            1 => ImageDevice::Gpu,
 
-          // NB: mutable access is not allowed due to the component model allowing
-          // multiple borrows of the same resource.
+                            _ => panic!("invalid enum discriminant"),
+                        }
+                    }
+                }
 
-          fn as_ptr<T: 'static>(&self) -> *mut _SerializerRep<T> {
-            Serializer::type_guard::<T>();
-            self.rep.cast()
-          }
-        }
+                /// A pointer of the mutable image buffer
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct ImageBuffer {
+                    handle: _rt::Resource<ImageBuffer>,
+                }
+
+                type _ImageBufferRep<T> = Option<T>;
+
+                impl ImageBuffer {
+                    /// Creates a new resource from the specified representation.
+                    ///
+                    /// This function will create a new resource handle by moving `val` onto
+                    /// the heap and then passing that heap pointer to the component model to
+                    /// create a handle. The owned handle is then returned as `ImageBuffer`.
+                    pub fn new<T: GuestImageBuffer>(val: T) -> Self {
+                        Self::type_guard::<T>();
+                        let val: _ImageBufferRep<T> = Some(val);
+                        let ptr: *mut _ImageBufferRep<T> =
+                            _rt::Box::into_raw(_rt::Box::new(val));
+                        unsafe {
+                            Self::from_handle(T::_resource_new(ptr.cast()))
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` which represents this resource.
+                    pub fn get<T: GuestImageBuffer>(&self) -> &T {
+                        let ptr = unsafe { &*self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    /// Gets mutable access to the underlying `T` which represents this
+                    /// resource.
+                    pub fn get_mut<T: GuestImageBuffer>(&mut self) -> &mut T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_mut().unwrap()
+                    }
+
+                    /// Consumes this resource and returns the underlying `T`.
+                    pub fn into_inner<T: GuestImageBuffer>(self) -> T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.take().unwrap()
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn from_handle(handle: u32) -> Self {
+                        Self {
+                            handle: _rt::Resource::from_handle(handle),
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub fn take_handle(&self) -> u32 {
+                        _rt::Resource::take_handle(&self.handle)
+                    }
+
+                    #[doc(hidden)]
+                    pub fn handle(&self) -> u32 {
+                        _rt::Resource::handle(&self.handle)
+                    }
+
+                    // It's theoretically possible to implement the `GuestImageBuffer` trait twice
+                    // so guard against using it with two different types here.
+                    #[doc(hidden)]
+                    fn type_guard<T: 'static>() {
+                        use core::any::TypeId;
+                        static mut LAST_TYPE: Option<TypeId> = None;
+                        unsafe {
+                            assert!(!cfg!(target_feature = "threads"));
+                            let id = TypeId::of::<T>();
+                            match LAST_TYPE {
+                                Some(ty) => assert!(ty == id, "cannot use two types with this resource type"),
+                                None => LAST_TYPE = Some(id),
+                            }
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn dtor<T: 'static>(handle: *mut u8) {
+                        Self::type_guard::<T>();
+                        let _ = _rt::Box::from_raw(handle as *mut _ImageBufferRep<T>);
+                    }
+
+                    fn as_ptr<T: GuestImageBuffer>(&self) -> *mut _ImageBufferRep<T> {
+                        ImageBuffer::type_guard::<T>();
+                        T::_resource_rep(self.handle()).cast()
+                    }
+                }
+
+                /// A borrowed version of [`ImageBuffer`] which represents a borrowed value
+                /// with the lifetime `'a`.
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct ImageBufferBorrow<'a> {
+                    rep: *mut u8,
+                    _marker: core::marker::PhantomData<&'a ImageBuffer>,
+                }
+
+                impl<'a> ImageBufferBorrow<'a> {
+                    #[doc(hidden)]
+                    pub unsafe fn lift(rep: usize) -> Self {
+                        Self {
+                            rep: rep as *mut u8,
+                            _marker: core::marker::PhantomData,
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` in this resource.
+                    pub fn get<T: GuestImageBuffer>(&self) -> &T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    // NB: mutable access is not allowed due to the component model allowing
+                    // multiple borrows of the same resource.
+
+                    fn as_ptr<T: 'static>(&self) -> *mut _ImageBufferRep<T> {
+                        ImageBuffer::type_guard::<T>();
+                        self.rep.cast()
+                    }
+                }
 
 
-        unsafe impl _rt::WasmResource for Serializer{
-          #[inline]
-          unsafe fn drop(_handle: u32) {
-            #[cfg(not(target_arch = "wasm32"))]
-            unreachable!();
+                unsafe impl _rt::WasmResource for ImageBuffer {
+                    #[inline]
+                    unsafe fn drop(_handle: u32) {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        unreachable!();
 
-            #[cfg(target_arch = "wasm32")]
-            {
-              #[link(wasm_import_module = "[export]wasi:serde/serialize@0.2.0")]
-              extern "C" {
-                #[link_name = "[resource-drop]serializer"]
-                fn drop(_: u32);
-              }
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/types@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-drop]image-buffer"]
+                                fn drop(_: u32);
+                            }
 
-              drop(_handle);
-            }
-          }
-        }
+                            drop(_handle);
+                        }
+                    }
+                }
 
-        #[doc(hidden)]
-        #[allow(non_snake_case)]
-        pub unsafe fn _export_method_serializer_serialize_s8_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-        _rt::run_ctors_once();let result0 = T::serialize_s8(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1 as i8);
-        let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-        match result0 {
-          Ok(_) => { {
-            *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-          } },
-          Err(e) => { {
-            *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-            use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-            match e {
-              V4::Custom(e) => {
-                *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-                let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-                let vec3 = (message2.into_bytes()).into_boxed_slice();
-                let ptr3 = vec3.as_ptr().cast::<u8>();
-                let len3 = vec3.len();
-                ::core::mem::forget(vec3);
-                *ptr1.add(12).cast::<usize>() = len3;
-                *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-              },
-            }
-          } },
-        };ptr1
-      }
-      #[doc(hidden)]
-      #[allow(non_snake_case)]
-      pub unsafe fn __post_return_method_serializer_serialize_s8<T: GuestSerializer>(arg0: *mut u8,) {
-        let l0 = i32::from(*arg0.add(0).cast::<u8>());
-        match l0 {
-          0 => (),
-          _ => {
-            let l1 = i32::from(*arg0.add(4).cast::<u8>());
-            match l1 {
-              _ => {
-                let l2 = *arg0.add(8).cast::<*mut u8>();
-                let l3 = *arg0.add(12).cast::<usize>();
-                _rt::cabi_dealloc(l2, l3, 1);
-              },
-            }
-          },
-        }
-      }
-      #[doc(hidden)]
-      #[allow(non_snake_case)]
-      pub unsafe fn _export_method_serializer_serialize_s16_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-      _rt::run_ctors_once();let result0 = T::serialize_s16(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1 as i16);
-      let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-      match result0 {
-        Ok(_) => { {
-          *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-        } },
-        Err(e) => { {
-          *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-          use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-          match e {
-            V4::Custom(e) => {
-              *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-              let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-              let vec3 = (message2.into_bytes()).into_boxed_slice();
-              let ptr3 = vec3.as_ptr().cast::<u8>();
-              let len3 = vec3.len();
-              ::core::mem::forget(vec3);
-              *ptr1.add(12).cast::<usize>() = len3;
-              *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-            },
-          }
-        } },
-      };ptr1
-    }
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn __post_return_method_serializer_serialize_s16<T: GuestSerializer>(arg0: *mut u8,) {
-      let l0 = i32::from(*arg0.add(0).cast::<u8>());
-      match l0 {
-        0 => (),
-        _ => {
-          let l1 = i32::from(*arg0.add(4).cast::<u8>());
-          match l1 {
-            _ => {
-              let l2 = *arg0.add(8).cast::<*mut u8>();
-              let l3 = *arg0.add(12).cast::<usize>();
-              _rt::cabi_dealloc(l2, l3, 1);
-            },
-          }
-        },
-      }
-    }
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn _export_method_serializer_serialize_s32_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-    _rt::run_ctors_once();let result0 = T::serialize_s32(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1);
-    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-    match result0 {
-      Ok(_) => { {
-        *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-      } },
-      Err(e) => { {
-        *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-        use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-        match e {
-          V4::Custom(e) => {
-            *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-            let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-            let vec3 = (message2.into_bytes()).into_boxed_slice();
-            let ptr3 = vec3.as_ptr().cast::<u8>();
-            let len3 = vec3.len();
-            ::core::mem::forget(vec3);
-            *ptr1.add(12).cast::<usize>() = len3;
-            *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-          },
-        }
-      } },
-    };ptr1
-  }
-  #[doc(hidden)]
-  #[allow(non_snake_case)]
-  pub unsafe fn __post_return_method_serializer_serialize_s32<T: GuestSerializer>(arg0: *mut u8,) {
-    let l0 = i32::from(*arg0.add(0).cast::<u8>());
-    match l0 {
-      0 => (),
-      _ => {
-        let l1 = i32::from(*arg0.add(4).cast::<u8>());
-        match l1 {
-          _ => {
-            let l2 = *arg0.add(8).cast::<*mut u8>();
-            let l3 = *arg0.add(12).cast::<usize>();
-            _rt::cabi_dealloc(l2, l3, 1);
-          },
-        }
-      },
-    }
-  }
-  #[doc(hidden)]
-  #[allow(non_snake_case)]
-  pub unsafe fn _export_method_serializer_serialize_s64_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i64,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-  _rt::run_ctors_once();let result0 = T::serialize_s64(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1);
-  let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-  match result0 {
-    Ok(_) => { {
-      *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-    } },
-    Err(e) => { {
-      *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-      use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-      match e {
-        V4::Custom(e) => {
-          *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-          let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-          let vec3 = (message2.into_bytes()).into_boxed_slice();
-          let ptr3 = vec3.as_ptr().cast::<u8>();
-          let len3 = vec3.len();
-          ::core::mem::forget(vec3);
-          *ptr1.add(12).cast::<usize>() = len3;
-          *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-        },
-      }
-    } },
-  };ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_s64<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_u8_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_u8(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1 as u8);
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_u8<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_u16_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_u16(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1 as u16);
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_u16<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_u32_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_u32(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1 as u32);
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_u32<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_u64_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i64,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_u64(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1 as u64);
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_u64<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_f32_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: f32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_f32(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1);
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_f32<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_f64_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: f64,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_f64(SerializerBorrow::lift(arg0 as u32 as usize).get(), arg1);
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_f64<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_bool_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_bool(SerializerBorrow::lift(arg0 as u32 as usize).get(), _rt::bool_lift(arg1 as u8));
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_bool<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_char_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: i32,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let result0 = T::serialize_char(SerializerBorrow::lift(arg0 as u32 as usize).get(), _rt::char_lift(arg1 as u32));
-let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result0 {
-  Ok(_) => { {
-    *ptr1.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr1.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V4;
-    match e {
-      V4::Custom(e) => {
-        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message2, } = e;
-        let vec3 = (message2.into_bytes()).into_boxed_slice();
-        let ptr3 = vec3.as_ptr().cast::<u8>();
-        let len3 = vec3.len();
-        ::core::mem::forget(vec3);
-        *ptr1.add(12).cast::<usize>() = len3;
-        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
-      },
-    }
-  } },
-};ptr1
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_char<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_bytes_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: *mut u8,arg2: usize,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let len0 = arg2;
-let result1 = T::serialize_bytes(SerializerBorrow::lift(arg0 as u32 as usize).get(), _rt::Vec::from_raw_parts(arg1.cast(), len0, len0));
-let ptr2 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result1 {
-  Ok(_) => { {
-    *ptr2.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr2.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V5;
-    match e {
-      V5::Custom(e) => {
-        *ptr2.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message3, } = e;
-        let vec4 = (message3.into_bytes()).into_boxed_slice();
-        let ptr4 = vec4.as_ptr().cast::<u8>();
-        let len4 = vec4.len();
-        ::core::mem::forget(vec4);
-        *ptr2.add(12).cast::<usize>() = len4;
-        *ptr2.add(8).cast::<*mut u8>() = ptr4.cast_mut();
-      },
-    }
-  } },
-};ptr2
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_bytes<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn _export_method_serializer_serialize_string_cabi<T: GuestSerializer>(arg0: *mut u8,arg1: *mut u8,arg2: usize,) -> *mut u8 {#[cfg(target_arch="wasm32")]
-_rt::run_ctors_once();let len0 = arg2;
-let bytes0 = _rt::Vec::from_raw_parts(arg1.cast(), len0, len0);
-let result1 = T::serialize_string(SerializerBorrow::lift(arg0 as u32 as usize).get(), _rt::string_lift(bytes0));
-let ptr2 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
-match result1 {
-  Ok(_) => { {
-    *ptr2.add(0).cast::<u8>() = (0i32) as u8;
-  } },
-  Err(e) => { {
-    *ptr2.add(0).cast::<u8>() = (1i32) as u8;
-    use super::super::super::super::exports::wasi::serde::errors::SerializeError as V5;
-    match e {
-      V5::Custom(e) => {
-        *ptr2.add(4).cast::<u8>() = (0i32) as u8;
-        let super::super::super::super::exports::wasi::serde::errors::CustomError{ message:message3, } = e;
-        let vec4 = (message3.into_bytes()).into_boxed_slice();
-        let ptr4 = vec4.as_ptr().cast::<u8>();
-        let len4 = vec4.len();
-        ::core::mem::forget(vec4);
-        *ptr2.add(12).cast::<usize>() = len4;
-        *ptr2.add(8).cast::<*mut u8>() = ptr4.cast_mut();
-      },
-    }
-  } },
-};ptr2
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub unsafe fn __post_return_method_serializer_serialize_string<T: GuestSerializer>(arg0: *mut u8,) {
-  let l0 = i32::from(*arg0.add(0).cast::<u8>());
-  match l0 {
-    0 => (),
-    _ => {
-      let l1 = i32::from(*arg0.add(4).cast::<u8>());
-      match l1 {
-        _ => {
-          let l2 = *arg0.add(8).cast::<*mut u8>();
-          let l3 = *arg0.add(12).cast::<usize>();
-          _rt::cabi_dealloc(l2, l3, 1);
-        },
-      }
-    },
-  }
-}
-pub trait Guest {
-  type Serializer: GuestSerializer;
-}
-pub trait GuestSerializer: 'static {
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_width_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::width(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    _rt::as_i32(result0)
+                }
 
-  #[doc(hidden)]
-  unsafe fn _resource_new(val: *mut u8) -> u32
-  where Self: Sized
-  {
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-      let _ = val;
-      unreachable!();
-    }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_height_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::height(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    _rt::as_i32(result0)
+                }
 
-    #[cfg(target_arch = "wasm32")]
-    {
-      #[link(wasm_import_module = "[export]wasi:serde/serialize@0.2.0")]
-      extern "C" {
-        #[link_name = "[resource-new]serializer"]
-        fn new(_: *mut u8) -> u32;
-      }
-      new(val)
-    }
-  }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_channels_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::channels(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    _rt::as_i32(result0)
+                }
 
-  #[doc(hidden)]
-  fn _resource_rep(handle: u32) -> *mut u8
-  where Self: Sized
-  {
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-      let _ = handle;
-      unreachable!();
-    }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_pixels_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::pixels(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    _rt::as_i32(result0)
+                }
 
-    #[cfg(target_arch = "wasm32")]
-    {
-      #[link(wasm_import_module = "[export]wasi:serde/serialize@0.2.0")]
-      extern "C" {
-        #[link_name = "[resource-rep]serializer"]
-        fn rep(_: u32) -> *mut u8;
-      }
-      unsafe {
-        rep(handle)
-      }
-    }
-  }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_pixel_format_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::pixel_format(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    result0.clone() as i32
+                }
 
-  
-  fn serialize_s8(&self,value: i8,) -> Result<(),SerializeError>;
-  fn serialize_s16(&self,value: i16,) -> Result<(),SerializeError>;
-  fn serialize_s32(&self,value: i32,) -> Result<(),SerializeError>;
-  fn serialize_s64(&self,value: i64,) -> Result<(),SerializeError>;
-  fn serialize_u8(&self,value: u8,) -> Result<(),SerializeError>;
-  fn serialize_u16(&self,value: u16,) -> Result<(),SerializeError>;
-  fn serialize_u32(&self,value: u32,) -> Result<(),SerializeError>;
-  fn serialize_u64(&self,value: u64,) -> Result<(),SerializeError>;
-  fn serialize_f32(&self,value: f32,) -> Result<(),SerializeError>;
-  fn serialize_f64(&self,value: f64,) -> Result<(),SerializeError>;
-  fn serialize_bool(&self,value: bool,) -> Result<(),SerializeError>;
-  fn serialize_char(&self,value: char,) -> Result<(),SerializeError>;
-  fn serialize_bytes(&self,value: _rt::Vec::<u8>,) -> Result<(),SerializeError>;
-  fn serialize_string(&self,value: _rt::String,) -> Result<(),SerializeError>;
-}
-#[doc(hidden)]
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_device_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::device(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    result0.clone() as i32
+                }
 
-macro_rules! __export_wasi_serde_serialize_0_2_0_cabi{
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_get_channal_cabi<T: GuestImageBuffer>(arg0: *mut u8, arg1: i32) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::get_channal(ImageBufferBorrow::lift(arg0 as u32 as usize).get(), arg1 as u32);
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_get_channal_red_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::get_channal_red(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Some(e) => {
+                            *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                            *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                        }
+                        None => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_get_channal_green_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::get_channal_green(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Some(e) => {
+                            *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                            *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                        }
+                        None => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_get_channal_blue_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::get_channal_blue(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Some(e) => {
+                            *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                            *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                        }
+                        None => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_get_channal_alpha_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::get_channal_alpha(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Some(e) => {
+                            *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                            *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                        }
+                        None => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_crop_cabi<T: GuestImageBuffer>(arg0: *mut u8, arg1: i32, arg2: i32, arg3: i32, arg4: i32) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::crop(ImageBufferBorrow::lift(arg0 as u32 as usize).get(), arg1 as u32, arg2 as u32, arg3 as u32, arg4 as u32);
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_flip_cabi<T: GuestImageBuffer>(arg0: *mut u8, arg1: i32, arg2: i32) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::flip(ImageBufferBorrow::lift(arg0 as u32 as usize).get(), _rt::bool_lift(arg1 as u8), _rt::bool_lift(arg2 as u8));
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_scale_cabi<T: GuestImageBuffer>(arg0: *mut u8, arg1: f32, arg2: f32) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::scale(ImageBufferBorrow::lift(arg0 as u32 as usize).get(), arg1, arg2);
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_clone_cabi<T: GuestImageBuffer>(arg0: *mut u8) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::clone(ImageBufferBorrow::lift(arg0 as u32 as usize).get());
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_image_buffer_recode_cabi<T: GuestImageBuffer>(arg0: *mut u8, arg1: i32, arg2: i32) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::recode(ImageBufferBorrow::lift(arg0 as u32 as usize).get(), PixelFormat::_lift(arg1 as u8), ImageDevice::_lift(arg2 as u8));
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_image_buffer_recode<T: GuestImageBuffer>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                pub trait Guest {
+                    type ImageBuffer: GuestImageBuffer;
+                }
+
+                pub trait GuestImageBuffer: 'static {
+                    #[doc(hidden)]
+                    unsafe fn _resource_new(val: *mut u8) -> u32
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = val;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/types@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-new]image-buffer"]
+                                fn new(_: *mut u8) -> u32;
+                            }
+                            new(val)
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    fn _resource_rep(handle: u32) -> *mut u8
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = handle;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/types@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-rep]image-buffer"]
+                                fn rep(_: u32) -> *mut u8;
+                            }
+                            unsafe {
+                                rep(handle)
+                            }
+                        }
+                    }
+
+
+                    /// Count the width of the image
+                    fn width(&self) -> u32;
+                    /// Count the height of the image
+                    fn height(&self) -> u32;
+                    /// Count the number of channels
+                    fn channels(&self) -> u32;
+                    /// Count the number of pixels
+                    fn pixels(&self) -> u32;
+                    /// Get the pixel format
+                    fn pixel_format(&self) -> PixelFormat;
+                    /// Get the device
+                    fn device(&self) -> ImageDevice;
+                    /// Get the channal at index
+                    fn get_channal(&self, index: u32) -> ImageBuffer;
+                    /// Get the red channal, return `none` if not exist
+                    fn get_channal_red(&self) -> Option<ImageBuffer>;
+                    /// Get the green channal, return `none` if not exist
+                    fn get_channal_green(&self) -> Option<ImageBuffer>;
+                    /// Get the blue channal, return `none` if not exist
+                    fn get_channal_blue(&self) -> Option<ImageBuffer>;
+                    /// Get the alpha channal, return `none` if not exist
+                    fn get_channal_alpha(&self) -> Option<ImageBuffer>;
+                    /// Crop the current image with origin and size, fill zeros if out of range
+                    fn crop(&self, x: u32, y: u32, w: u32, h: u32) -> ImageBuffer;
+                    /// Flip the current image
+                    fn flip(&self, x: bool, y: bool) -> ImageBuffer;
+                    /// Scale the current image
+                    fn scale(&self, w: f32, h: f32) -> ImageBuffer;
+                    /// Clone the image
+                    fn clone(&self) -> ImageBuffer;
+                    /// Recode the image
+                    fn recode(&self, pixel: PixelFormat, device: ImageDevice) -> Result<ImageBuffer, ImageError>;
+                }
+                #[doc(hidden)]
+
+                macro_rules! __export_wasi_image_types_0_2_1_draft_cabi {
   ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
 
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-s8"]
-    unsafe extern "C" fn export_method_serializer_serialize_s8(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_s8_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.width"]
+    unsafe extern "C" fn export_method_image_buffer_width(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_width_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-s8"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_s8(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_s8::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.height"]
+    unsafe extern "C" fn export_method_image_buffer_height(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_height_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-s16"]
-    unsafe extern "C" fn export_method_serializer_serialize_s16(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_s16_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.channels"]
+    unsafe extern "C" fn export_method_image_buffer_channels(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_channels_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-s16"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_s16(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_s16::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.pixels"]
+    unsafe extern "C" fn export_method_image_buffer_pixels(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_pixels_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-s32"]
-    unsafe extern "C" fn export_method_serializer_serialize_s32(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_s32_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.pixel-format"]
+    unsafe extern "C" fn export_method_image_buffer_pixel_format(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_pixel_format_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-s32"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_s32(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_s32::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.device"]
+    unsafe extern "C" fn export_method_image_buffer_device(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_device_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-s64"]
-    unsafe extern "C" fn export_method_serializer_serialize_s64(arg0: *mut u8,arg1: i64,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_s64_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.get-channal"]
+    unsafe extern "C" fn export_method_image_buffer_get_channal(arg0: *mut u8,arg1: i32,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_get_channal_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0, arg1)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-s64"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_s64(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_s64::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.get-channal-red"]
+    unsafe extern "C" fn export_method_image_buffer_get_channal_red(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_image_buffer_get_channal_red_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-u8"]
-    unsafe extern "C" fn export_method_serializer_serialize_u8(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_u8_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.get-channal-green"]
+    unsafe extern "C" fn export_method_image_buffer_get_channal_green(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_image_buffer_get_channal_green_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-u8"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_u8(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_u8::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.get-channal-blue"]
+    unsafe extern "C" fn export_method_image_buffer_get_channal_blue(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_image_buffer_get_channal_blue_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-u16"]
-    unsafe extern "C" fn export_method_serializer_serialize_u16(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_u16_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.get-channal-alpha"]
+    unsafe extern "C" fn export_method_image_buffer_get_channal_alpha(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_image_buffer_get_channal_alpha_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-u16"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_u16(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_u16::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.crop"]
+    unsafe extern "C" fn export_method_image_buffer_crop(arg0: *mut u8,arg1: i32,arg2: i32,arg3: i32,arg4: i32,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_crop_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0, arg1, arg2, arg3, arg4)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-u32"]
-    unsafe extern "C" fn export_method_serializer_serialize_u32(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_u32_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.flip"]
+    unsafe extern "C" fn export_method_image_buffer_flip(arg0: *mut u8,arg1: i32,arg2: i32,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_flip_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0, arg1, arg2)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-u32"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_u32(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_u32::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.scale"]
+    unsafe extern "C" fn export_method_image_buffer_scale(arg0: *mut u8,arg1: f32,arg2: f32,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_scale_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0, arg1, arg2)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-u64"]
-    unsafe extern "C" fn export_method_serializer_serialize_u64(arg0: *mut u8,arg1: i64,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_u64_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.clone"]
+    unsafe extern "C" fn export_method_image_buffer_clone(arg0: *mut u8,) -> i32 {
+      $($path_to_types)*::_export_method_image_buffer_clone_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-u64"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_u64(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_u64::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "wasi:image/types@0.2.1-draft#[method]image-buffer.recode"]
+    unsafe extern "C" fn export_method_image_buffer_recode(arg0: *mut u8,arg1: i32,arg2: i32,) -> *mut u8 {
+      $($path_to_types)*::_export_method_image_buffer_recode_cabi::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0, arg1, arg2)
     }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-f32"]
-    unsafe extern "C" fn export_method_serializer_serialize_f32(arg0: *mut u8,arg1: f32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_f32_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
-    }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-f32"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_f32(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_f32::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
-    }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-f64"]
-    unsafe extern "C" fn export_method_serializer_serialize_f64(arg0: *mut u8,arg1: f64,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_f64_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
-    }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-f64"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_f64(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_f64::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
-    }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-bool"]
-    unsafe extern "C" fn export_method_serializer_serialize_bool(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_bool_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
-    }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-bool"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_bool(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_bool::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
-    }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-char"]
-    unsafe extern "C" fn export_method_serializer_serialize_char(arg0: *mut u8,arg1: i32,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_char_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1)
-    }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-char"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_char(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_char::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
-    }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-bytes"]
-    unsafe extern "C" fn export_method_serializer_serialize_bytes(arg0: *mut u8,arg1: *mut u8,arg2: usize,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_bytes_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1, arg2)
-    }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-bytes"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_bytes(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_bytes::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
-    }
-    #[export_name = "wasi:serde/serialize@0.2.0#[method]serializer.serialize-string"]
-    unsafe extern "C" fn export_method_serializer_serialize_string(arg0: *mut u8,arg1: *mut u8,arg2: usize,) -> *mut u8 {
-      $($path_to_types)*::_export_method_serializer_serialize_string_cabi::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0, arg1, arg2)
-    }
-    #[export_name = "cabi_post_wasi:serde/serialize@0.2.0#[method]serializer.serialize-string"]
-    unsafe extern "C" fn _post_return_method_serializer_serialize_string(arg0: *mut u8,) {
-      $($path_to_types)*::__post_return_method_serializer_serialize_string::<<$ty as $($path_to_types)*::Guest>::Serializer>(arg0)
+    #[export_name = "cabi_post_wasi:image/types@0.2.1-draft#[method]image-buffer.recode"]
+    unsafe extern "C" fn _post_return_method_image_buffer_recode(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_image_buffer_recode::<<$ty as $($path_to_types)*::Guest>::ImageBuffer>(arg0)
     }
 
     const _: () = {
       #[doc(hidden)]
-      #[export_name = "wasi:serde/serialize@0.2.0#[dtor]serializer"]
+      #[export_name = "wasi:image/types@0.2.1-draft#[dtor]image-buffer"]
       #[allow(non_snake_case)]
       unsafe extern "C" fn dtor(rep: *mut u8) {
-        $($path_to_types)*::Serializer::dtor::<
-        <$ty as $($path_to_types)*::Guest>::Serializer
+        $($path_to_types)*::ImageBuffer::dtor::<
+        <$ty as $($path_to_types)*::Guest>::ImageBuffer
         >(rep)
       }
     };
-    
+
   };);
 }
-#[doc(hidden)]
-pub(crate) use __export_wasi_serde_serialize_0_2_0_cabi;
-#[repr(align(4))]
-struct _RetArea([::core::mem::MaybeUninit::<u8>; 16]);
-static mut _RET_AREA: _RetArea = _RetArea([::core::mem::MaybeUninit::uninit(); 16]);
+                #[doc(hidden)]
+                pub(crate) use __export_wasi_image_types_0_2_1_draft_cabi;
 
-}
+                #[repr(align(4))]
+                struct _RetArea([::core::mem::MaybeUninit::<u8>; 24]);
 
-}
-}
-}
-mod _rt {
-  pub use alloc_crate::string::String;
+                static mut _RET_AREA: _RetArea = _RetArea([::core::mem::MaybeUninit::uninit(); 24]);
+            }
+
+            #[allow(dead_code, clippy::all)]
+            pub mod png {
+                #[used]
+                #[doc(hidden)]
+                #[cfg(target_arch = "wasm32")]
+                static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
+
+                use super::super::super::super::_rt;
+
+                pub type ImageError = super::super::super::super::exports::wasi::image::errors::ImageError;
+                pub type ImageBuffer = super::super::super::super::exports::wasi::image::types::ImageBuffer;
+                pub type ImageBufferBorrow<'a> = super::super::super::super::exports::wasi::image::types::ImageBufferBorrow<'a>;
+
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct PngReader {
+                    handle: _rt::Resource<PngReader>,
+                }
+
+                type _PngReaderRep<T> = Option<T>;
+
+                impl PngReader {
+                    /// Creates a new resource from the specified representation.
+                    ///
+                    /// This function will create a new resource handle by moving `val` onto
+                    /// the heap and then passing that heap pointer to the component model to
+                    /// create a handle. The owned handle is then returned as `PngReader`.
+                    pub fn new<T: GuestPngReader>(val: T) -> Self {
+                        Self::type_guard::<T>();
+                        let val: _PngReaderRep<T> = Some(val);
+                        let ptr: *mut _PngReaderRep<T> =
+                            _rt::Box::into_raw(_rt::Box::new(val));
+                        unsafe {
+                            Self::from_handle(T::_resource_new(ptr.cast()))
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` which represents this resource.
+                    pub fn get<T: GuestPngReader>(&self) -> &T {
+                        let ptr = unsafe { &*self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    /// Gets mutable access to the underlying `T` which represents this
+                    /// resource.
+                    pub fn get_mut<T: GuestPngReader>(&mut self) -> &mut T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_mut().unwrap()
+                    }
+
+                    /// Consumes this resource and returns the underlying `T`.
+                    pub fn into_inner<T: GuestPngReader>(self) -> T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.take().unwrap()
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn from_handle(handle: u32) -> Self {
+                        Self {
+                            handle: _rt::Resource::from_handle(handle),
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub fn take_handle(&self) -> u32 {
+                        _rt::Resource::take_handle(&self.handle)
+                    }
+
+                    #[doc(hidden)]
+                    pub fn handle(&self) -> u32 {
+                        _rt::Resource::handle(&self.handle)
+                    }
+
+                    // It's theoretically possible to implement the `GuestPngReader` trait twice
+                    // so guard against using it with two different types here.
+                    #[doc(hidden)]
+                    fn type_guard<T: 'static>() {
+                        use core::any::TypeId;
+                        static mut LAST_TYPE: Option<TypeId> = None;
+                        unsafe {
+                            assert!(!cfg!(target_feature = "threads"));
+                            let id = TypeId::of::<T>();
+                            match LAST_TYPE {
+                                Some(ty) => assert!(ty == id, "cannot use two types with this resource type"),
+                                None => LAST_TYPE = Some(id),
+                            }
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn dtor<T: 'static>(handle: *mut u8) {
+                        Self::type_guard::<T>();
+                        let _ = _rt::Box::from_raw(handle as *mut _PngReaderRep<T>);
+                    }
+
+                    fn as_ptr<T: GuestPngReader>(&self) -> *mut _PngReaderRep<T> {
+                        PngReader::type_guard::<T>();
+                        T::_resource_rep(self.handle()).cast()
+                    }
+                }
+
+                /// A borrowed version of [`PngReader`] which represents a borrowed value
+                /// with the lifetime `'a`.
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct PngReaderBorrow<'a> {
+                    rep: *mut u8,
+                    _marker: core::marker::PhantomData<&'a PngReader>,
+                }
+
+                impl<'a> PngReaderBorrow<'a> {
+                    #[doc(hidden)]
+                    pub unsafe fn lift(rep: usize) -> Self {
+                        Self {
+                            rep: rep as *mut u8,
+                            _marker: core::marker::PhantomData,
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` in this resource.
+                    pub fn get<T: GuestPngReader>(&self) -> &T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    // NB: mutable access is not allowed due to the component model allowing
+                    // multiple borrows of the same resource.
+
+                    fn as_ptr<T: 'static>(&self) -> *mut _PngReaderRep<T> {
+                        PngReader::type_guard::<T>();
+                        self.rep.cast()
+                    }
+                }
 
 
-  use core::fmt;
-  use core::marker;
-  use core::sync::atomic::{AtomicU32, Ordering::Relaxed};
+                unsafe impl _rt::WasmResource for PngReader {
+                    #[inline]
+                    unsafe fn drop(_handle: u32) {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        unreachable!();
 
-  /// A type which represents a component model resource, either imported or
-  /// exported into this component.
-  ///
-  /// This is a low-level wrapper which handles the lifetime of the resource
-  /// (namely this has a destructor). The `T` provided defines the component model
-  /// intrinsics that this wrapper uses.
-  ///
-  /// One of the chief purposes of this type is to provide `Deref` implementations
-  /// to access the underlying data when it is owned.
-  ///
-  /// This type is primarily used in generated code for exported and imported
-  /// resources.
-  #[repr(transparent)]
-  pub struct Resource<T: WasmResource> {
-    // NB: This would ideally be `u32` but it is not. The fact that this has
-    // interior mutability is not exposed in the API of this type except for the
-    // `take_handle` method which is supposed to in theory be private.
-    //
-    // This represents, almost all the time, a valid handle value. When it's
-    // invalid it's stored as `u32::MAX`.
-    handle: AtomicU32,
-    _marker: marker::PhantomData<T>,
-  }
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/png@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-drop]png-reader"]
+                                fn drop(_: u32);
+                            }
 
-  /// A trait which all wasm resources implement, namely providing the ability to
-  /// drop a resource.
-  ///
-  /// This generally is implemented by generated code, not user-facing code.
-  pub unsafe trait WasmResource {
-    /// Invokes the `[resource-drop]...` intrinsic.
-    unsafe fn drop(handle: u32);
-  }
+                            drop(_handle);
+                        }
+                    }
+                }
 
-  impl<T: WasmResource> Resource<T> {
-    #[doc(hidden)]
-    pub unsafe fn from_handle(handle: u32) -> Self {
-      debug_assert!(handle != u32::MAX);
-      Self {
-        handle: AtomicU32::new(handle),
-        _marker: marker::PhantomData,
+
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct PngWriter {
+                    handle: _rt::Resource<PngWriter>,
+                }
+
+                type _PngWriterRep<T> = Option<T>;
+
+                impl PngWriter {
+                    /// Creates a new resource from the specified representation.
+                    ///
+                    /// This function will create a new resource handle by moving `val` onto
+                    /// the heap and then passing that heap pointer to the component model to
+                    /// create a handle. The owned handle is then returned as `PngWriter`.
+                    pub fn new<T: GuestPngWriter>(val: T) -> Self {
+                        Self::type_guard::<T>();
+                        let val: _PngWriterRep<T> = Some(val);
+                        let ptr: *mut _PngWriterRep<T> =
+                            _rt::Box::into_raw(_rt::Box::new(val));
+                        unsafe {
+                            Self::from_handle(T::_resource_new(ptr.cast()))
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` which represents this resource.
+                    pub fn get<T: GuestPngWriter>(&self) -> &T {
+                        let ptr = unsafe { &*self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    /// Gets mutable access to the underlying `T` which represents this
+                    /// resource.
+                    pub fn get_mut<T: GuestPngWriter>(&mut self) -> &mut T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_mut().unwrap()
+                    }
+
+                    /// Consumes this resource and returns the underlying `T`.
+                    pub fn into_inner<T: GuestPngWriter>(self) -> T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.take().unwrap()
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn from_handle(handle: u32) -> Self {
+                        Self {
+                            handle: _rt::Resource::from_handle(handle),
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub fn take_handle(&self) -> u32 {
+                        _rt::Resource::take_handle(&self.handle)
+                    }
+
+                    #[doc(hidden)]
+                    pub fn handle(&self) -> u32 {
+                        _rt::Resource::handle(&self.handle)
+                    }
+
+                    // It's theoretically possible to implement the `GuestPngWriter` trait twice
+                    // so guard against using it with two different types here.
+                    #[doc(hidden)]
+                    fn type_guard<T: 'static>() {
+                        use core::any::TypeId;
+                        static mut LAST_TYPE: Option<TypeId> = None;
+                        unsafe {
+                            assert!(!cfg!(target_feature = "threads"));
+                            let id = TypeId::of::<T>();
+                            match LAST_TYPE {
+                                Some(ty) => assert!(ty == id, "cannot use two types with this resource type"),
+                                None => LAST_TYPE = Some(id),
+                            }
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn dtor<T: 'static>(handle: *mut u8) {
+                        Self::type_guard::<T>();
+                        let _ = _rt::Box::from_raw(handle as *mut _PngWriterRep<T>);
+                    }
+
+                    fn as_ptr<T: GuestPngWriter>(&self) -> *mut _PngWriterRep<T> {
+                        PngWriter::type_guard::<T>();
+                        T::_resource_rep(self.handle()).cast()
+                    }
+                }
+
+                /// A borrowed version of [`PngWriter`] which represents a borrowed value
+                /// with the lifetime `'a`.
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct PngWriterBorrow<'a> {
+                    rep: *mut u8,
+                    _marker: core::marker::PhantomData<&'a PngWriter>,
+                }
+
+                impl<'a> PngWriterBorrow<'a> {
+                    #[doc(hidden)]
+                    pub unsafe fn lift(rep: usize) -> Self {
+                        Self {
+                            rep: rep as *mut u8,
+                            _marker: core::marker::PhantomData,
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` in this resource.
+                    pub fn get<T: GuestPngWriter>(&self) -> &T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    // NB: mutable access is not allowed due to the component model allowing
+                    // multiple borrows of the same resource.
+
+                    fn as_ptr<T: 'static>(&self) -> *mut _PngWriterRep<T> {
+                        PngWriter::type_guard::<T>();
+                        self.rep.cast()
+                    }
+                }
+
+
+                unsafe impl _rt::WasmResource for PngWriter {
+                    #[inline]
+                    unsafe fn drop(_handle: u32) {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        unreachable!();
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/png@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-drop]png-writer"]
+                                fn drop(_: u32);
+                            }
+
+                            drop(_handle);
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_static_png_reader_read_bytes_cabi<T: GuestPngReader>(arg0: *mut u8, arg1: usize) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let len0 = arg1;
+                    let result1 = T::read_bytes(_rt::Vec::from_raw_parts(arg0.cast(), len0, len0));
+                    (result1).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_png_reader_width_cabi<T: GuestPngReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::width(PngReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_png_reader_width<T: GuestPngReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_png_reader_height_cabi<T: GuestPngReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::height(PngReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_png_reader_height<T: GuestPngReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_png_reader_channels_cabi<T: GuestPngReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::channels(PngReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_png_reader_channels<T: GuestPngReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_png_reader_pixels_cabi<T: GuestPngReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::pixels(PngReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_png_reader_pixels<T: GuestPngReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_png_reader_finish_cabi<T: GuestPngReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::finish(PngReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_png_reader_finish<T: GuestPngReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_constructor_png_writer_cabi<T: GuestPngWriter>() -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = PngWriter::new(T::new());
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_png_writer_write_bytes_cabi<T: GuestPngWriter>(arg0: *mut u8, arg1: i32) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::write_bytes(PngWriterBorrow::lift(arg0 as u32 as usize).get(), super::super::super::super::exports::wasi::image::types::ImageBuffer::from_handle(arg1 as u32));
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                let vec2 = (e).into_boxed_slice();
+                                let ptr2 = vec2.as_ptr().cast::<u8>();
+                                let len2 = vec2.len();
+                                ::core::mem::forget(vec2);
+                                *ptr1.add(8).cast::<usize>() = len2;
+                                *ptr1.add(4).cast::<*mut u8>() = ptr2.cast_mut();
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V12;
+                                match e {
+                                    V12::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message3, } = e;
+                                        let vec4 = (message3.into_bytes()).into_boxed_slice();
+                                        let ptr4 = vec4.as_ptr().cast::<u8>();
+                                        let len4 = vec4.len();
+                                        ::core::mem::forget(vec4);
+                                        *ptr1.add(12).cast::<usize>() = len4;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr4.cast_mut();
+                                    }
+                                    V12::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message5, } = e;
+                                        let vec6 = (message5.into_bytes()).into_boxed_slice();
+                                        let ptr6 = vec6.as_ptr().cast::<u8>();
+                                        let len6 = vec6.len();
+                                        ::core::mem::forget(vec6);
+                                        *ptr1.add(12).cast::<usize>() = len6;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr6.cast_mut();
+                                    }
+                                    V12::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation7, reason: reason7, } = e;
+                                        let vec8 = (operation7.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(12).cast::<usize>() = len8;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr8.cast_mut();
+                                        let vec9 = (reason7.into_bytes()).into_boxed_slice();
+                                        let ptr9 = vec9.as_ptr().cast::<u8>();
+                                        let len9 = vec9.len();
+                                        ::core::mem::forget(vec9);
+                                        *ptr1.add(20).cast::<usize>() = len9;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr9.cast_mut();
+                                    }
+                                    V12::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message10, } = e;
+                                        let vec11 = (message10.into_bytes()).into_boxed_slice();
+                                        let ptr11 = vec11.as_ptr().cast::<u8>();
+                                        let len11 = vec11.len();
+                                        ::core::mem::forget(vec11);
+                                        *ptr1.add(12).cast::<usize>() = len11;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr11.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_png_writer_write_bytes<T: GuestPngWriter>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => {
+                            let l1 = *arg0.add(4).cast::<*mut u8>();
+                            let l2 = *arg0.add(8).cast::<usize>();
+                            let base3 = l1;
+                            let len3 = l2;
+                            _rt::cabi_dealloc(base3, len3 * 1, 1);
+                        }
+                        _ => {
+                            let l4 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l4 {
+                                0 => {
+                                    let l5 = *arg0.add(8).cast::<*mut u8>();
+                                    let l6 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l5, l6, 1);
+                                }
+                                1 => {
+                                    let l7 = *arg0.add(8).cast::<*mut u8>();
+                                    let l8 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l7, l8, 1);
+                                }
+                                2 => {
+                                    let l9 = *arg0.add(8).cast::<*mut u8>();
+                                    let l10 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l9, l10, 1);
+                                    let l11 = *arg0.add(16).cast::<*mut u8>();
+                                    let l12 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l11, l12, 1);
+                                }
+                                _ => {
+                                    let l13 = *arg0.add(8).cast::<*mut u8>();
+                                    let l14 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l13, l14, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                pub trait Guest {
+                    type PngReader: GuestPngReader;
+                    type PngWriter: GuestPngWriter;
+                }
+
+                pub trait GuestPngReader: 'static {
+                    #[doc(hidden)]
+                    unsafe fn _resource_new(val: *mut u8) -> u32
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = val;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/png@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-new]png-reader"]
+                                fn new(_: *mut u8) -> u32;
+                            }
+                            new(val)
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    fn _resource_rep(handle: u32) -> *mut u8
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = handle;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/png@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-rep]png-reader"]
+                                fn rep(_: u32) -> *mut u8;
+                            }
+                            unsafe {
+                                rep(handle)
+                            }
+                        }
+                    }
+
+
+                    /// Assume that this byte stream is a legal png image
+                    fn read_bytes(bytes: _rt::Vec::<u8>) -> PngReader;
+                    /// Get width from meta info, no need to decode image
+                    fn width(&self) -> Result<u32, ImageError>;
+                    /// Get height from meta info, no need to decode image
+                    fn height(&self) -> Result<u32, ImageError>;
+                    /// Get channels from meta info, no need to decode image
+                    fn channels(&self) -> Result<u32, ImageError>;
+                    /// Get pixels from meta info, no need to decode image
+                    fn pixels(&self) -> Result<u32, ImageError>;
+                    /// Finish decoding and take the image buffer
+                    fn finish(&self) -> Result<ImageBuffer, ImageError>;
+                }
+
+                pub trait GuestPngWriter: 'static {
+                    #[doc(hidden)]
+                    unsafe fn _resource_new(val: *mut u8) -> u32
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = val;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/png@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-new]png-writer"]
+                                fn new(_: *mut u8) -> u32;
+                            }
+                            new(val)
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    fn _resource_rep(handle: u32) -> *mut u8
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = handle;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/png@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-rep]png-writer"]
+                                fn rep(_: u32) -> *mut u8;
+                            }
+                            unsafe {
+                                rep(handle)
+                            }
+                        }
+                    }
+
+
+                    /// Create a new png writer
+                    fn new() -> Self;
+                    /// Write image to bytes
+                    fn write_bytes(&self, image: ImageBuffer) -> Result<_rt::Vec::<u8>, ImageError>;
+                }
+                #[doc(hidden)]
+
+                macro_rules! __export_wasi_image_png_0_2_1_draft_cabi {
+  ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
+
+    #[export_name = "wasi:image/png@0.2.1-draft#[static]png-reader.read-bytes"]
+    unsafe extern "C" fn export_static_png_reader_read_bytes(arg0: *mut u8,arg1: usize,) -> i32 {
+      $($path_to_types)*::_export_static_png_reader_read_bytes_cabi::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0, arg1)
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[method]png-reader.width"]
+    unsafe extern "C" fn export_method_png_reader_width(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_png_reader_width_cabi::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/png@0.2.1-draft#[method]png-reader.width"]
+    unsafe extern "C" fn _post_return_method_png_reader_width(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_png_reader_width::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[method]png-reader.height"]
+    unsafe extern "C" fn export_method_png_reader_height(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_png_reader_height_cabi::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/png@0.2.1-draft#[method]png-reader.height"]
+    unsafe extern "C" fn _post_return_method_png_reader_height(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_png_reader_height::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[method]png-reader.channels"]
+    unsafe extern "C" fn export_method_png_reader_channels(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_png_reader_channels_cabi::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/png@0.2.1-draft#[method]png-reader.channels"]
+    unsafe extern "C" fn _post_return_method_png_reader_channels(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_png_reader_channels::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[method]png-reader.pixels"]
+    unsafe extern "C" fn export_method_png_reader_pixels(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_png_reader_pixels_cabi::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/png@0.2.1-draft#[method]png-reader.pixels"]
+    unsafe extern "C" fn _post_return_method_png_reader_pixels(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_png_reader_pixels::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[method]png-reader.finish"]
+    unsafe extern "C" fn export_method_png_reader_finish(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_png_reader_finish_cabi::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/png@0.2.1-draft#[method]png-reader.finish"]
+    unsafe extern "C" fn _post_return_method_png_reader_finish(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_png_reader_finish::<<$ty as $($path_to_types)*::Guest>::PngReader>(arg0)
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[constructor]png-writer"]
+    unsafe extern "C" fn export_constructor_png_writer() -> i32 {
+      $($path_to_types)*::_export_constructor_png_writer_cabi::<<$ty as $($path_to_types)*::Guest>::PngWriter>()
+    }
+    #[export_name = "wasi:image/png@0.2.1-draft#[method]png-writer.write-bytes"]
+    unsafe extern "C" fn export_method_png_writer_write_bytes(arg0: *mut u8,arg1: i32,) -> *mut u8 {
+      $($path_to_types)*::_export_method_png_writer_write_bytes_cabi::<<$ty as $($path_to_types)*::Guest>::PngWriter>(arg0, arg1)
+    }
+    #[export_name = "cabi_post_wasi:image/png@0.2.1-draft#[method]png-writer.write-bytes"]
+    unsafe extern "C" fn _post_return_method_png_writer_write_bytes(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_png_writer_write_bytes::<<$ty as $($path_to_types)*::Guest>::PngWriter>(arg0)
+    }
+
+    const _: () = {
+      #[doc(hidden)]
+      #[export_name = "wasi:image/png@0.2.1-draft#[dtor]png-reader"]
+      #[allow(non_snake_case)]
+      unsafe extern "C" fn dtor(rep: *mut u8) {
+        $($path_to_types)*::PngReader::dtor::<
+        <$ty as $($path_to_types)*::Guest>::PngReader
+        >(rep)
       }
+    };
+
+
+    const _: () = {
+      #[doc(hidden)]
+      #[export_name = "wasi:image/png@0.2.1-draft#[dtor]png-writer"]
+      #[allow(non_snake_case)]
+      unsafe extern "C" fn dtor(rep: *mut u8) {
+        $($path_to_types)*::PngWriter::dtor::<
+        <$ty as $($path_to_types)*::Guest>::PngWriter
+        >(rep)
+      }
+    };
+
+  };);
+}
+                #[doc(hidden)]
+                pub(crate) use __export_wasi_image_png_0_2_1_draft_cabi;
+
+                #[repr(align(4))]
+                struct _RetArea([::core::mem::MaybeUninit::<u8>; 24]);
+
+                static mut _RET_AREA: _RetArea = _RetArea([::core::mem::MaybeUninit::uninit(); 24]);
+            }
+
+            #[allow(dead_code, clippy::all)]
+            pub mod jpeg {
+                #[used]
+                #[doc(hidden)]
+                #[cfg(target_arch = "wasm32")]
+                static __FORCE_SECTION_REF: fn() = super::super::super::super::__link_custom_section_describing_imports;
+
+                use super::super::super::super::_rt;
+
+                pub type ImageError = super::super::super::super::exports::wasi::image::errors::ImageError;
+                pub type ImageBuffer = super::super::super::super::exports::wasi::image::types::ImageBuffer;
+                pub type ImageBufferBorrow<'a> = super::super::super::super::exports::wasi::image::types::ImageBufferBorrow<'a>;
+
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct JpegReader {
+                    handle: _rt::Resource<JpegReader>,
+                }
+
+                type _JpegReaderRep<T> = Option<T>;
+
+                impl JpegReader {
+                    /// Creates a new resource from the specified representation.
+                    ///
+                    /// This function will create a new resource handle by moving `val` onto
+                    /// the heap and then passing that heap pointer to the component model to
+                    /// create a handle. The owned handle is then returned as `JpegReader`.
+                    pub fn new<T: GuestJpegReader>(val: T) -> Self {
+                        Self::type_guard::<T>();
+                        let val: _JpegReaderRep<T> = Some(val);
+                        let ptr: *mut _JpegReaderRep<T> =
+                            _rt::Box::into_raw(_rt::Box::new(val));
+                        unsafe {
+                            Self::from_handle(T::_resource_new(ptr.cast()))
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` which represents this resource.
+                    pub fn get<T: GuestJpegReader>(&self) -> &T {
+                        let ptr = unsafe { &*self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    /// Gets mutable access to the underlying `T` which represents this
+                    /// resource.
+                    pub fn get_mut<T: GuestJpegReader>(&mut self) -> &mut T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_mut().unwrap()
+                    }
+
+                    /// Consumes this resource and returns the underlying `T`.
+                    pub fn into_inner<T: GuestJpegReader>(self) -> T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.take().unwrap()
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn from_handle(handle: u32) -> Self {
+                        Self {
+                            handle: _rt::Resource::from_handle(handle),
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub fn take_handle(&self) -> u32 {
+                        _rt::Resource::take_handle(&self.handle)
+                    }
+
+                    #[doc(hidden)]
+                    pub fn handle(&self) -> u32 {
+                        _rt::Resource::handle(&self.handle)
+                    }
+
+                    // It's theoretically possible to implement the `GuestJpegReader` trait twice
+                    // so guard against using it with two different types here.
+                    #[doc(hidden)]
+                    fn type_guard<T: 'static>() {
+                        use core::any::TypeId;
+                        static mut LAST_TYPE: Option<TypeId> = None;
+                        unsafe {
+                            assert!(!cfg!(target_feature = "threads"));
+                            let id = TypeId::of::<T>();
+                            match LAST_TYPE {
+                                Some(ty) => assert!(ty == id, "cannot use two types with this resource type"),
+                                None => LAST_TYPE = Some(id),
+                            }
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn dtor<T: 'static>(handle: *mut u8) {
+                        Self::type_guard::<T>();
+                        let _ = _rt::Box::from_raw(handle as *mut _JpegReaderRep<T>);
+                    }
+
+                    fn as_ptr<T: GuestJpegReader>(&self) -> *mut _JpegReaderRep<T> {
+                        JpegReader::type_guard::<T>();
+                        T::_resource_rep(self.handle()).cast()
+                    }
+                }
+
+                /// A borrowed version of [`JpegReader`] which represents a borrowed value
+                /// with the lifetime `'a`.
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct JpegReaderBorrow<'a> {
+                    rep: *mut u8,
+                    _marker: core::marker::PhantomData<&'a JpegReader>,
+                }
+
+                impl<'a> JpegReaderBorrow<'a> {
+                    #[doc(hidden)]
+                    pub unsafe fn lift(rep: usize) -> Self {
+                        Self {
+                            rep: rep as *mut u8,
+                            _marker: core::marker::PhantomData,
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` in this resource.
+                    pub fn get<T: GuestJpegReader>(&self) -> &T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    // NB: mutable access is not allowed due to the component model allowing
+                    // multiple borrows of the same resource.
+
+                    fn as_ptr<T: 'static>(&self) -> *mut _JpegReaderRep<T> {
+                        JpegReader::type_guard::<T>();
+                        self.rep.cast()
+                    }
+                }
+
+
+                unsafe impl _rt::WasmResource for JpegReader {
+                    #[inline]
+                    unsafe fn drop(_handle: u32) {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        unreachable!();
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/jpeg@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-drop]jpeg-reader"]
+                                fn drop(_: u32);
+                            }
+
+                            drop(_handle);
+                        }
+                    }
+                }
+
+
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct JpegWriter {
+                    handle: _rt::Resource<JpegWriter>,
+                }
+
+                type _JpegWriterRep<T> = Option<T>;
+
+                impl JpegWriter {
+                    /// Creates a new resource from the specified representation.
+                    ///
+                    /// This function will create a new resource handle by moving `val` onto
+                    /// the heap and then passing that heap pointer to the component model to
+                    /// create a handle. The owned handle is then returned as `JpegWriter`.
+                    pub fn new<T: GuestJpegWriter>(val: T) -> Self {
+                        Self::type_guard::<T>();
+                        let val: _JpegWriterRep<T> = Some(val);
+                        let ptr: *mut _JpegWriterRep<T> =
+                            _rt::Box::into_raw(_rt::Box::new(val));
+                        unsafe {
+                            Self::from_handle(T::_resource_new(ptr.cast()))
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` which represents this resource.
+                    pub fn get<T: GuestJpegWriter>(&self) -> &T {
+                        let ptr = unsafe { &*self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    /// Gets mutable access to the underlying `T` which represents this
+                    /// resource.
+                    pub fn get_mut<T: GuestJpegWriter>(&mut self) -> &mut T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_mut().unwrap()
+                    }
+
+                    /// Consumes this resource and returns the underlying `T`.
+                    pub fn into_inner<T: GuestJpegWriter>(self) -> T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.take().unwrap()
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn from_handle(handle: u32) -> Self {
+                        Self {
+                            handle: _rt::Resource::from_handle(handle),
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub fn take_handle(&self) -> u32 {
+                        _rt::Resource::take_handle(&self.handle)
+                    }
+
+                    #[doc(hidden)]
+                    pub fn handle(&self) -> u32 {
+                        _rt::Resource::handle(&self.handle)
+                    }
+
+                    // It's theoretically possible to implement the `GuestJpegWriter` trait twice
+                    // so guard against using it with two different types here.
+                    #[doc(hidden)]
+                    fn type_guard<T: 'static>() {
+                        use core::any::TypeId;
+                        static mut LAST_TYPE: Option<TypeId> = None;
+                        unsafe {
+                            assert!(!cfg!(target_feature = "threads"));
+                            let id = TypeId::of::<T>();
+                            match LAST_TYPE {
+                                Some(ty) => assert!(ty == id, "cannot use two types with this resource type"),
+                                None => LAST_TYPE = Some(id),
+                            }
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    pub unsafe fn dtor<T: 'static>(handle: *mut u8) {
+                        Self::type_guard::<T>();
+                        let _ = _rt::Box::from_raw(handle as *mut _JpegWriterRep<T>);
+                    }
+
+                    fn as_ptr<T: GuestJpegWriter>(&self) -> *mut _JpegWriterRep<T> {
+                        JpegWriter::type_guard::<T>();
+                        T::_resource_rep(self.handle()).cast()
+                    }
+                }
+
+                /// A borrowed version of [`JpegWriter`] which represents a borrowed value
+                /// with the lifetime `'a`.
+                #[derive(Debug)]
+                #[repr(transparent)]
+                pub struct JpegWriterBorrow<'a> {
+                    rep: *mut u8,
+                    _marker: core::marker::PhantomData<&'a JpegWriter>,
+                }
+
+                impl<'a> JpegWriterBorrow<'a> {
+                    #[doc(hidden)]
+                    pub unsafe fn lift(rep: usize) -> Self {
+                        Self {
+                            rep: rep as *mut u8,
+                            _marker: core::marker::PhantomData,
+                        }
+                    }
+
+                    /// Gets access to the underlying `T` in this resource.
+                    pub fn get<T: GuestJpegWriter>(&self) -> &T {
+                        let ptr = unsafe { &mut *self.as_ptr::<T>() };
+                        ptr.as_ref().unwrap()
+                    }
+
+                    // NB: mutable access is not allowed due to the component model allowing
+                    // multiple borrows of the same resource.
+
+                    fn as_ptr<T: 'static>(&self) -> *mut _JpegWriterRep<T> {
+                        JpegWriter::type_guard::<T>();
+                        self.rep.cast()
+                    }
+                }
+
+
+                unsafe impl _rt::WasmResource for JpegWriter {
+                    #[inline]
+                    unsafe fn drop(_handle: u32) {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        unreachable!();
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/jpeg@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-drop]jpeg-writer"]
+                                fn drop(_: u32);
+                            }
+
+                            drop(_handle);
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_static_jpeg_reader_read_bytes_cabi<T: GuestJpegReader>(arg0: *mut u8, arg1: usize) -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let len0 = arg1;
+                    let result1 = T::read_bytes(_rt::Vec::from_raw_parts(arg0.cast(), len0, len0));
+                    (result1).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_reader_width_cabi<T: GuestJpegReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::width(JpegReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_jpeg_reader_width<T: GuestJpegReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_reader_height_cabi<T: GuestJpegReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::height(JpegReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_jpeg_reader_height<T: GuestJpegReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_reader_channels_cabi<T: GuestJpegReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::channels(JpegReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_jpeg_reader_channels<T: GuestJpegReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_reader_pixels_cabi<T: GuestJpegReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::pixels(JpegReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = _rt::as_i32(e);
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_jpeg_reader_pixels<T: GuestJpegReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_reader_finish_cabi<T: GuestJpegReader>(arg0: *mut u8) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::finish(JpegReaderBorrow::lift(arg0 as u32 as usize).get());
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                *ptr1.add(4).cast::<i32>() = (e).take_handle() as i32;
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V11;
+                                match e {
+                                    V11::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message2, } = e;
+                                        let vec3 = (message2.into_bytes()).into_boxed_slice();
+                                        let ptr3 = vec3.as_ptr().cast::<u8>();
+                                        let len3 = vec3.len();
+                                        ::core::mem::forget(vec3);
+                                        *ptr1.add(12).cast::<usize>() = len3;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr3.cast_mut();
+                                    }
+                                    V11::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message4, } = e;
+                                        let vec5 = (message4.into_bytes()).into_boxed_slice();
+                                        let ptr5 = vec5.as_ptr().cast::<u8>();
+                                        let len5 = vec5.len();
+                                        ::core::mem::forget(vec5);
+                                        *ptr1.add(12).cast::<usize>() = len5;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr5.cast_mut();
+                                    }
+                                    V11::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation6, reason: reason6, } = e;
+                                        let vec7 = (operation6.into_bytes()).into_boxed_slice();
+                                        let ptr7 = vec7.as_ptr().cast::<u8>();
+                                        let len7 = vec7.len();
+                                        ::core::mem::forget(vec7);
+                                        *ptr1.add(12).cast::<usize>() = len7;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr7.cast_mut();
+                                        let vec8 = (reason6.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(20).cast::<usize>() = len8;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr8.cast_mut();
+                                    }
+                                    V11::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message9, } = e;
+                                        let vec10 = (message9.into_bytes()).into_boxed_slice();
+                                        let ptr10 = vec10.as_ptr().cast::<u8>();
+                                        let len10 = vec10.len();
+                                        ::core::mem::forget(vec10);
+                                        *ptr1.add(12).cast::<usize>() = len10;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr10.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_jpeg_reader_finish<T: GuestJpegReader>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => (),
+                        _ => {
+                            let l1 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l1 {
+                                0 => {
+                                    let l2 = *arg0.add(8).cast::<*mut u8>();
+                                    let l3 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l2, l3, 1);
+                                }
+                                1 => {
+                                    let l4 = *arg0.add(8).cast::<*mut u8>();
+                                    let l5 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l4, l5, 1);
+                                }
+                                2 => {
+                                    let l6 = *arg0.add(8).cast::<*mut u8>();
+                                    let l7 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l6, l7, 1);
+                                    let l8 = *arg0.add(16).cast::<*mut u8>();
+                                    let l9 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l8, l9, 1);
+                                }
+                                _ => {
+                                    let l10 = *arg0.add(8).cast::<*mut u8>();
+                                    let l11 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l10, l11, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_constructor_jpeg_writer_cabi<T: GuestJpegWriter>() -> i32 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = JpegWriter::new(T::new());
+                    (result0).take_handle() as i32
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_writer_set_quality_cabi<T: GuestJpegWriter>(arg0: *mut u8, arg1: f32) {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    T::set_quality(JpegWriterBorrow::lift(arg0 as u32 as usize).get(), arg1);
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn _export_method_jpeg_writer_write_bytes_cabi<T: GuestJpegWriter>(arg0: *mut u8, arg1: i32) -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")]
+                    _rt::run_ctors_once();
+                    let result0 = T::write_bytes(JpegWriterBorrow::lift(arg0 as u32 as usize).get(), super::super::super::super::exports::wasi::image::types::ImageBuffer::from_handle(arg1 as u32));
+                    let ptr1 = _RET_AREA.0.as_mut_ptr().cast::<u8>();
+                    match result0 {
+                        Ok(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                                let vec2 = (e).into_boxed_slice();
+                                let ptr2 = vec2.as_ptr().cast::<u8>();
+                                let len2 = vec2.len();
+                                ::core::mem::forget(vec2);
+                                *ptr1.add(8).cast::<usize>() = len2;
+                                *ptr1.add(4).cast::<*mut u8>() = ptr2.cast_mut();
+                            }
+                        }
+                        Err(e) => {
+                            {
+                                *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                                use super::super::super::super::exports::wasi::image::errors::ImageError as V12;
+                                match e {
+                                    V12::Encode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (0i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::EncodeError { message: message3, } = e;
+                                        let vec4 = (message3.into_bytes()).into_boxed_slice();
+                                        let ptr4 = vec4.as_ptr().cast::<u8>();
+                                        let len4 = vec4.len();
+                                        ::core::mem::forget(vec4);
+                                        *ptr1.add(12).cast::<usize>() = len4;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr4.cast_mut();
+                                    }
+                                    V12::Decode(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (1i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::DecodeError { message: message5, } = e;
+                                        let vec6 = (message5.into_bytes()).into_boxed_slice();
+                                        let ptr6 = vec6.as_ptr().cast::<u8>();
+                                        let len6 = vec6.len();
+                                        ::core::mem::forget(vec6);
+                                        *ptr1.add(12).cast::<usize>() = len6;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr6.cast_mut();
+                                    }
+                                    V12::Operation(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (2i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::InvalidOperation { operation: operation7, reason: reason7, } = e;
+                                        let vec8 = (operation7.into_bytes()).into_boxed_slice();
+                                        let ptr8 = vec8.as_ptr().cast::<u8>();
+                                        let len8 = vec8.len();
+                                        ::core::mem::forget(vec8);
+                                        *ptr1.add(12).cast::<usize>() = len8;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr8.cast_mut();
+                                        let vec9 = (reason7.into_bytes()).into_boxed_slice();
+                                        let ptr9 = vec9.as_ptr().cast::<u8>();
+                                        let len9 = vec9.len();
+                                        ::core::mem::forget(vec9);
+                                        *ptr1.add(20).cast::<usize>() = len9;
+                                        *ptr1.add(16).cast::<*mut u8>() = ptr9.cast_mut();
+                                    }
+                                    V12::Custom(e) => {
+                                        *ptr1.add(4).cast::<u8>() = (3i32) as u8;
+                                        let super::super::super::super::exports::wasi::image::errors::CustomError { message: message10, } = e;
+                                        let vec11 = (message10.into_bytes()).into_boxed_slice();
+                                        let ptr11 = vec11.as_ptr().cast::<u8>();
+                                        let len11 = vec11.len();
+                                        ::core::mem::forget(vec11);
+                                        *ptr1.add(12).cast::<usize>() = len11;
+                                        *ptr1.add(8).cast::<*mut u8>() = ptr11.cast_mut();
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    ptr1
+                }
+
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_method_jpeg_writer_write_bytes<T: GuestJpegWriter>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => {
+                            let l1 = *arg0.add(4).cast::<*mut u8>();
+                            let l2 = *arg0.add(8).cast::<usize>();
+                            let base3 = l1;
+                            let len3 = l2;
+                            _rt::cabi_dealloc(base3, len3 * 1, 1);
+                        }
+                        _ => {
+                            let l4 = i32::from(*arg0.add(4).cast::<u8>());
+                            match l4 {
+                                0 => {
+                                    let l5 = *arg0.add(8).cast::<*mut u8>();
+                                    let l6 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l5, l6, 1);
+                                }
+                                1 => {
+                                    let l7 = *arg0.add(8).cast::<*mut u8>();
+                                    let l8 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l7, l8, 1);
+                                }
+                                2 => {
+                                    let l9 = *arg0.add(8).cast::<*mut u8>();
+                                    let l10 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l9, l10, 1);
+                                    let l11 = *arg0.add(16).cast::<*mut u8>();
+                                    let l12 = *arg0.add(20).cast::<usize>();
+                                    _rt::cabi_dealloc(l11, l12, 1);
+                                }
+                                _ => {
+                                    let l13 = *arg0.add(8).cast::<*mut u8>();
+                                    let l14 = *arg0.add(12).cast::<usize>();
+                                    _rt::cabi_dealloc(l13, l14, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                pub trait Guest {
+                    type JpegReader: GuestJpegReader;
+                    type JpegWriter: GuestJpegWriter;
+                }
+
+                pub trait GuestJpegReader: 'static {
+                    #[doc(hidden)]
+                    unsafe fn _resource_new(val: *mut u8) -> u32
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = val;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/jpeg@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-new]jpeg-reader"]
+                                fn new(_: *mut u8) -> u32;
+                            }
+                            new(val)
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    fn _resource_rep(handle: u32) -> *mut u8
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = handle;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/jpeg@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-rep]jpeg-reader"]
+                                fn rep(_: u32) -> *mut u8;
+                            }
+                            unsafe {
+                                rep(handle)
+                            }
+                        }
+                    }
+
+
+                    /// Assume that this byte stream is a legal jpeg image
+                    fn read_bytes(bytes: _rt::Vec::<u8>) -> JpegReader;
+                    /// Get width from meta info, no need to decode image
+                    fn width(&self) -> Result<u32, ImageError>;
+                    /// Get height from meta info, no need to decode image
+                    fn height(&self) -> Result<u32, ImageError>;
+                    /// Get channels from meta info, no need to decode image
+                    fn channels(&self) -> Result<u32, ImageError>;
+                    /// Get pixels from meta info, no need to decode image
+                    fn pixels(&self) -> Result<u32, ImageError>;
+                    /// Finish decoding and take the image buffer
+                    fn finish(&self) -> Result<ImageBuffer, ImageError>;
+                }
+
+                pub trait GuestJpegWriter: 'static {
+                    #[doc(hidden)]
+                    unsafe fn _resource_new(val: *mut u8) -> u32
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = val;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/jpeg@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-new]jpeg-writer"]
+                                fn new(_: *mut u8) -> u32;
+                            }
+                            new(val)
+                        }
+                    }
+
+                    #[doc(hidden)]
+                    fn _resource_rep(handle: u32) -> *mut u8
+                        where Self: Sized
+                    {
+                        #[cfg(not(target_arch = "wasm32"))]
+                        {
+                            let _ = handle;
+                            unreachable!();
+                        }
+
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            #[link(wasm_import_module = "[export]wasi:image/jpeg@0.2.1-draft")]
+                            extern "C" {
+                                #[link_name = "[resource-rep]jpeg-writer"]
+                                fn rep(_: u32) -> *mut u8;
+                            }
+                            unsafe {
+                                rep(handle)
+                            }
+                        }
+                    }
+
+
+                    /// Create a new jpeg writer
+                    fn new() -> Self;
+                    /// Set the quality of the jpeg image
+                    fn set_quality(&self, quality: f32);
+                    /// Write image to bytes
+                    fn write_bytes(&self, image: ImageBuffer) -> Result<_rt::Vec::<u8>, ImageError>;
+                }
+                #[doc(hidden)]
+
+                macro_rules! __export_wasi_image_jpeg_0_2_1_draft_cabi {
+  ($ty:ident with_types_in $($path_to_types:tt)*) => (const _: () = {
+
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[static]jpeg-reader.read-bytes"]
+    unsafe extern "C" fn export_static_jpeg_reader_read_bytes(arg0: *mut u8,arg1: usize,) -> i32 {
+      $($path_to_types)*::_export_static_jpeg_reader_read_bytes_cabi::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0, arg1)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.width"]
+    unsafe extern "C" fn export_method_jpeg_reader_width(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_jpeg_reader_width_cabi::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.width"]
+    unsafe extern "C" fn _post_return_method_jpeg_reader_width(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_jpeg_reader_width::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.height"]
+    unsafe extern "C" fn export_method_jpeg_reader_height(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_jpeg_reader_height_cabi::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.height"]
+    unsafe extern "C" fn _post_return_method_jpeg_reader_height(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_jpeg_reader_height::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.channels"]
+    unsafe extern "C" fn export_method_jpeg_reader_channels(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_jpeg_reader_channels_cabi::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.channels"]
+    unsafe extern "C" fn _post_return_method_jpeg_reader_channels(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_jpeg_reader_channels::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.pixels"]
+    unsafe extern "C" fn export_method_jpeg_reader_pixels(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_jpeg_reader_pixels_cabi::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.pixels"]
+    unsafe extern "C" fn _post_return_method_jpeg_reader_pixels(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_jpeg_reader_pixels::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.finish"]
+    unsafe extern "C" fn export_method_jpeg_reader_finish(arg0: *mut u8,) -> *mut u8 {
+      $($path_to_types)*::_export_method_jpeg_reader_finish_cabi::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "cabi_post_wasi:image/jpeg@0.2.1-draft#[method]jpeg-reader.finish"]
+    unsafe extern "C" fn _post_return_method_jpeg_reader_finish(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_jpeg_reader_finish::<<$ty as $($path_to_types)*::Guest>::JpegReader>(arg0)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[constructor]jpeg-writer"]
+    unsafe extern "C" fn export_constructor_jpeg_writer() -> i32 {
+      $($path_to_types)*::_export_constructor_jpeg_writer_cabi::<<$ty as $($path_to_types)*::Guest>::JpegWriter>()
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-writer.set-quality"]
+    unsafe extern "C" fn export_method_jpeg_writer_set_quality(arg0: *mut u8,arg1: f32,) {
+      $($path_to_types)*::_export_method_jpeg_writer_set_quality_cabi::<<$ty as $($path_to_types)*::Guest>::JpegWriter>(arg0, arg1)
+    }
+    #[export_name = "wasi:image/jpeg@0.2.1-draft#[method]jpeg-writer.write-bytes"]
+    unsafe extern "C" fn export_method_jpeg_writer_write_bytes(arg0: *mut u8,arg1: i32,) -> *mut u8 {
+      $($path_to_types)*::_export_method_jpeg_writer_write_bytes_cabi::<<$ty as $($path_to_types)*::Guest>::JpegWriter>(arg0, arg1)
+    }
+    #[export_name = "cabi_post_wasi:image/jpeg@0.2.1-draft#[method]jpeg-writer.write-bytes"]
+    unsafe extern "C" fn _post_return_method_jpeg_writer_write_bytes(arg0: *mut u8,) {
+      $($path_to_types)*::__post_return_method_jpeg_writer_write_bytes::<<$ty as $($path_to_types)*::Guest>::JpegWriter>(arg0)
     }
 
-    /// Takes ownership of the handle owned by `resource`.
-    ///
-    /// Note that this ideally would be `into_handle` taking `Resource<T>` by
-    /// ownership. The code generator does not enable that in all situations,
-    /// unfortunately, so this is provided instead.
-    ///
-    /// Also note that `take_handle` is in theory only ever called on values
-    /// owned by a generated function. For example a generated function might
-    /// take `Resource<T>` as an argument but then call `take_handle` on a
-    /// reference to that argument. In that sense the dynamic nature of
-    /// `take_handle` should only be exposed internally to generated code, not
-    /// to user code.
-    #[doc(hidden)]
-    pub fn take_handle(resource: &Resource<T>) -> u32 {
-      resource.handle.swap(u32::MAX, Relaxed)
-    }
+    const _: () = {
+      #[doc(hidden)]
+      #[export_name = "wasi:image/jpeg@0.2.1-draft#[dtor]jpeg-reader"]
+      #[allow(non_snake_case)]
+      unsafe extern "C" fn dtor(rep: *mut u8) {
+        $($path_to_types)*::JpegReader::dtor::<
+        <$ty as $($path_to_types)*::Guest>::JpegReader
+        >(rep)
+      }
+    };
 
-    #[doc(hidden)]
-    pub fn handle(resource: &Resource<T>) -> u32 {
-      resource.handle.load(Relaxed)
-    }
-  }
 
-  impl<T: WasmResource> fmt::Debug for Resource<T> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-      f.debug_struct("Resource")
-      .field("handle", &self.handle)
-      .finish()
-    }
-  }
+    const _: () = {
+      #[doc(hidden)]
+      #[export_name = "wasi:image/jpeg@0.2.1-draft#[dtor]jpeg-writer"]
+      #[allow(non_snake_case)]
+      unsafe extern "C" fn dtor(rep: *mut u8) {
+        $($path_to_types)*::JpegWriter::dtor::<
+        <$ty as $($path_to_types)*::Guest>::JpegWriter
+        >(rep)
+      }
+    };
 
-  impl<T: WasmResource> Drop for Resource<T> {
-    fn drop(&mut self) {
-      unsafe {
-        match self.handle.load(Relaxed) {
-          // If this handle was "taken" then don't do anything in the
-          // destructor.
-          u32::MAX => {}
+  };);
+}
+                #[doc(hidden)]
+                pub(crate) use __export_wasi_image_jpeg_0_2_1_draft_cabi;
 
-          // ... but otherwise do actually destroy it with the imported
-          // component model intrinsic as defined through `T`.
-          other => T::drop(other),
+                #[repr(align(4))]
+                struct _RetArea([::core::mem::MaybeUninit::<u8>; 24]);
+
+                static mut _RET_AREA: _RetArea = _RetArea([::core::mem::MaybeUninit::uninit(); 24]);
+            }
         }
-      }
     }
-  }
-  pub use alloc_crate::boxed::Box;
+}
 
-  #[cfg(target_arch = "wasm32")]
-  pub fn run_ctors_once() {
-    wit_bindgen::rt::run_ctors_once();
-  }
-  pub unsafe fn cabi_dealloc(ptr: *mut u8, size: usize, align: usize) {
-    if size == 0 {
-      return;
+mod _rt {
+    pub use alloc_crate::string::String;
+
+
+    use core::fmt;
+    use core::marker;
+    use core::sync::atomic::{AtomicU32, Ordering::Relaxed};
+
+    /// A type which represents a component model resource, either imported or
+    /// exported into this component.
+    ///
+    /// This is a low-level wrapper which handles the lifetime of the resource
+    /// (namely this has a destructor). The `T` provided defines the component model
+    /// intrinsics that this wrapper uses.
+    ///
+    /// One of the chief purposes of this type is to provide `Deref` implementations
+    /// to access the underlying data when it is owned.
+    ///
+    /// This type is primarily used in generated code for exported and imported
+    /// resources.
+    #[repr(transparent)]
+    pub struct Resource<T: WasmResource> {
+        // NB: This would ideally be `u32` but it is not. The fact that this has
+        // interior mutability is not exposed in the API of this type except for the
+        // `take_handle` method which is supposed to in theory be private.
+        //
+        // This represents, almost all the time, a valid handle value. When it's
+        // invalid it's stored as `u32::MAX`.
+        handle: AtomicU32,
+        _marker: marker::PhantomData<T>,
     }
-    let layout = alloc::Layout::from_size_align_unchecked(size, align);
-    alloc::dealloc(ptr as *mut u8, layout);
-  }
-  pub unsafe fn bool_lift(val: u8) -> bool {
-    if cfg!(debug_assertions) {
-      match val {
-        0 => false,
-        1 => true,
-        _ => panic!("invalid bool discriminant"),
-      }
-    } else {
-      val != 0
+
+    /// A trait which all wasm resources implement, namely providing the ability to
+    /// drop a resource.
+    ///
+    /// This generally is implemented by generated code, not user-facing code.
+    pub unsafe trait WasmResource {
+        /// Invokes the `[resource-drop]...` intrinsic.
+        unsafe fn drop(handle: u32);
     }
-  }
-  pub unsafe fn char_lift(val: u32) -> char {
-    if cfg!(debug_assertions) {
-      core::char::from_u32(val).unwrap()
-    } else {
-      core::char::from_u32_unchecked(val)
+
+    impl<T: WasmResource> Resource<T> {
+        #[doc(hidden)]
+        pub unsafe fn from_handle(handle: u32) -> Self {
+            debug_assert!(handle != u32::MAX);
+            Self {
+                handle: AtomicU32::new(handle),
+                _marker: marker::PhantomData,
+            }
+        }
+
+        /// Takes ownership of the handle owned by `resource`.
+        ///
+        /// Note that this ideally would be `into_handle` taking `Resource<T>` by
+        /// ownership. The code generator does not enable that in all situations,
+        /// unfortunately, so this is provided instead.
+        ///
+        /// Also note that `take_handle` is in theory only ever called on values
+        /// owned by a generated function. For example a generated function might
+        /// take `Resource<T>` as an argument but then call `take_handle` on a
+        /// reference to that argument. In that sense the dynamic nature of
+        /// `take_handle` should only be exposed internally to generated code, not
+        /// to user code.
+        #[doc(hidden)]
+        pub fn take_handle(resource: &Resource<T>) -> u32 {
+            resource.handle.swap(u32::MAX, Relaxed)
+        }
+
+        #[doc(hidden)]
+        pub fn handle(resource: &Resource<T>) -> u32 {
+            resource.handle.load(Relaxed)
+        }
     }
-  }
-  pub use alloc_crate::vec::Vec;
-  pub unsafe fn string_lift(bytes: Vec<u8>) -> String {
-    if cfg!(debug_assertions) {
-      String::from_utf8(bytes).unwrap()
-    } else {
-      String::from_utf8_unchecked(bytes)
+
+    impl<T: WasmResource> fmt::Debug for Resource<T> {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            f.debug_struct("Resource")
+                .field("handle", &self.handle)
+                .finish()
+        }
     }
-  }
-  extern crate alloc as alloc_crate;
-  pub use alloc_crate::alloc;
+
+    impl<T: WasmResource> Drop for Resource<T> {
+        fn drop(&mut self) {
+            unsafe {
+                match self.handle.load(Relaxed) {
+                    // If this handle was "taken" then don't do anything in the
+                    // destructor.
+                    u32::MAX => {}
+
+                    // ... but otherwise do actually destroy it with the imported
+                    // component model intrinsic as defined through `T`.
+                    other => T::drop(other),
+                }
+            }
+        }
+    }
+
+    pub use alloc_crate::boxed::Box;
+
+    #[cfg(target_arch = "wasm32")]
+    pub fn run_ctors_once() {
+        wit_bindgen::rt::run_ctors_once();
+    }
+
+    pub fn as_i32<T: AsI32>(t: T) -> i32 {
+        t.as_i32()
+    }
+
+    pub trait AsI32 {
+        fn as_i32(self) -> i32;
+    }
+
+    impl<'a, T: Copy + AsI32> AsI32 for &'a T {
+        fn as_i32(self) -> i32 {
+            (*self).as_i32()
+        }
+    }
+
+    impl AsI32 for i32 {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for u32 {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for i16 {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for u16 {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for i8 {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for u8 {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for char {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    impl AsI32 for usize {
+        #[inline]
+        fn as_i32(self) -> i32 {
+            self as i32
+        }
+    }
+
+    pub unsafe fn bool_lift(val: u8) -> bool {
+        if cfg!(debug_assertions) {
+            match val {
+                0 => false,
+                1 => true,
+                _ => panic!("invalid bool discriminant"),
+            }
+        } else {
+            val != 0
+        }
+    }
+
+    pub unsafe fn cabi_dealloc(ptr: *mut u8, size: usize, align: usize) {
+        if size == 0 {
+            return;
+        }
+        let layout = alloc::Layout::from_size_align_unchecked(size, align);
+        alloc::dealloc(ptr as *mut u8, layout);
+    }
+
+    pub use alloc_crate::vec::Vec;
+
+    extern crate alloc as alloc_crate;
+
+    pub use alloc_crate::alloc;
 }
 
 /// Generates `#[no_mangle]` functions to export the specified type as the
@@ -1206,8 +3479,10 @@ mod _rt {
 macro_rules! __export_imports_impl {
   ($ty:ident) => (self::export!($ty with_types_in self););
   ($ty:ident with_types_in $($path_to_types_root:tt)*) => (
-  $($path_to_types_root)*::exports::wasi::serde::errors::__export_wasi_serde_errors_0_2_0_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::serde::errors);
-  $($path_to_types_root)*::exports::wasi::serde::serialize::__export_wasi_serde_serialize_0_2_0_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::serde::serialize);
+  $($path_to_types_root)*::exports::wasi::image::errors::__export_wasi_image_errors_0_2_1_draft_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::image::errors);
+  $($path_to_types_root)*::exports::wasi::image::types::__export_wasi_image_types_0_2_1_draft_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::image::types);
+  $($path_to_types_root)*::exports::wasi::image::png::__export_wasi_image_png_0_2_1_draft_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::image::png);
+  $($path_to_types_root)*::exports::wasi::image::jpeg::__export_wasi_image_jpeg_0_2_1_draft_cabi!($ty with_types_in $($path_to_types_root)*::exports::wasi::image::jpeg);
   )
 }
 #[doc(inline)]
@@ -1216,35 +3491,62 @@ pub(crate) use __export_imports_impl as export;
 #[cfg(target_arch = "wasm32")]
 #[link_section = "component-type:wit-bindgen:0.24.0:imports:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1137] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xf3\x07\x01A\x02\x01\
-A\x05\x01B\x04\x01r\x01\x07messages\x04\0\x0ccustom-error\x03\0\0\x01q\x01\x06cu\
-stom\x01\x01\0\x04\0\x0fserialize-error\x03\0\x02\x04\x01\x17wasi:serde/errors@0\
-.2.0\x05\0\x02\x03\0\0\x0fserialize-error\x01B\"\x02\x03\x02\x01\x01\x04\0\x0fse\
-rialize-error\x03\0\0\x04\0\x0aserializer\x03\x01\x01h\x02\x01j\0\x01\x01\x01@\x02\
-\x04self\x03\x05value~\0\x04\x04\0\x1f[method]serializer.serialize-s8\x01\x05\x01\
-@\x02\x04self\x03\x05value|\0\x04\x04\0\x20[method]serializer.serialize-s16\x01\x06\
-\x01@\x02\x04self\x03\x05valuez\0\x04\x04\0\x20[method]serializer.serialize-s32\x01\
-\x07\x01@\x02\x04self\x03\x05valuex\0\x04\x04\0\x20[method]serializer.serialize-\
-s64\x01\x08\x01@\x02\x04self\x03\x05value}\0\x04\x04\0\x1f[method]serializer.ser\
-ialize-u8\x01\x09\x01@\x02\x04self\x03\x05value{\0\x04\x04\0\x20[method]serializ\
-er.serialize-u16\x01\x0a\x01@\x02\x04self\x03\x05valuey\0\x04\x04\0\x20[method]s\
-erializer.serialize-u32\x01\x0b\x01@\x02\x04self\x03\x05valuew\0\x04\x04\0\x20[m\
-ethod]serializer.serialize-u64\x01\x0c\x01@\x02\x04self\x03\x05valuev\0\x04\x04\0\
-\x20[method]serializer.serialize-f32\x01\x0d\x01@\x02\x04self\x03\x05valueu\0\x04\
-\x04\0\x20[method]serializer.serialize-f64\x01\x0e\x01@\x02\x04self\x03\x05value\
-\x7f\0\x04\x04\0![method]serializer.serialize-bool\x01\x0f\x01@\x02\x04self\x03\x05\
-valuet\0\x04\x04\0![method]serializer.serialize-char\x01\x10\x01p}\x01@\x02\x04s\
-elf\x03\x05value\x11\0\x04\x04\0\"[method]serializer.serialize-bytes\x01\x12\x01\
-@\x02\x04self\x03\x05values\0\x04\x04\0#[method]serializer.serialize-string\x01\x13\
-\x04\x01\x1awasi:serde/serialize@0.2.0\x05\x02\x04\x01\x18wasi:serde/imports@0.2\
-.0\x04\0\x0b\x0d\x01\0\x07imports\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
-\x0dwit-component\x070.202.0\x10wit-bindgen-rust\x060.24.0";
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 2347] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xad\x11\x01A\x02\x01\
+A\x0a\x01B\x0a\x01r\x01\x07messages\x04\0\x0cencode-error\x03\0\0\x01r\x01\x07me\
+ssages\x04\0\x0cdecode-error\x03\0\x02\x01r\x02\x09operations\x06reasons\x04\0\x11\
+invalid-operation\x03\0\x04\x01r\x01\x07messages\x04\0\x0ccustom-error\x03\0\x06\
+\x01q\x04\x06encode\x01\x01\0\x06decode\x01\x03\0\x09operation\x01\x05\0\x06cust\
+om\x01\x07\0\x04\0\x0bimage-error\x03\0\x08\x04\x01\x1dwasi:image/errors@0.2.1-d\
+raft\x05\0\x02\x03\0\0\x0bimage-error\x01B%\x02\x03\x02\x01\x01\x04\0\x0bimage-e\
+rror\x03\0\0\x01m\x0d\x05luma8\x07luma-a8\x06luma16\x08luma-a16\x06luma32\x08lum\
+a-a32\x04rgb8\x06rgb556\x05rgba8\x05rgb16\x06rgba16\x05rgb32\x06rgba32\x04\0\x0c\
+pixel-format\x03\0\x02\x01m\x02\x03cpu\x03gpu\x04\0\x0cimage-device\x03\0\x04\x04\
+\0\x0cimage-buffer\x03\x01\x01h\x06\x01@\x01\x04self\x07\0y\x04\0\x1a[method]ima\
+ge-buffer.width\x01\x08\x04\0\x1b[method]image-buffer.height\x01\x08\x04\0\x1d[m\
+ethod]image-buffer.channels\x01\x08\x04\0\x1b[method]image-buffer.pixels\x01\x08\
+\x01@\x01\x04self\x07\0\x03\x04\0![method]image-buffer.pixel-format\x01\x09\x01@\
+\x01\x04self\x07\0\x05\x04\0\x1b[method]image-buffer.device\x01\x0a\x01i\x06\x01\
+@\x02\x04self\x07\x05indexy\0\x0b\x04\0\x20[method]image-buffer.get-channal\x01\x0c\
+\x01k\x0b\x01@\x01\x04self\x07\0\x0d\x04\0$[method]image-buffer.get-channal-red\x01\
+\x0e\x04\0&[method]image-buffer.get-channal-green\x01\x0e\x04\0%[method]image-bu\
+ffer.get-channal-blue\x01\x0e\x04\0&[method]image-buffer.get-channal-alpha\x01\x0e\
+\x01@\x05\x04self\x07\x01xy\x01yy\x01wy\x01hy\0\x0b\x04\0\x19[method]image-buffe\
+r.crop\x01\x0f\x01@\x03\x04self\x07\x01x\x7f\x01y\x7f\0\x0b\x04\0\x19[method]ima\
+ge-buffer.flip\x01\x10\x01@\x03\x04self\x07\x01wv\x01hv\0\x0b\x04\0\x1a[method]i\
+mage-buffer.scale\x01\x11\x01@\x01\x04self\x07\0\x0b\x04\0\x1a[method]image-buff\
+er.clone\x01\x12\x01j\x01\x0b\x01\x01\x01@\x03\x04self\x07\x05pixel\x03\x06devic\
+e\x05\0\x13\x04\0\x1b[method]image-buffer.recode\x01\x14\x04\x01\x1cwasi:image/t\
+ypes@0.2.1-draft\x05\x02\x02\x03\0\x01\x0cimage-buffer\x01B\x1c\x02\x03\x02\x01\x01\
+\x04\0\x0bimage-error\x03\0\0\x02\x03\x02\x01\x03\x04\0\x0cimage-buffer\x03\0\x02\
+\x04\0\x0apng-reader\x03\x01\x04\0\x0apng-writer\x03\x01\x01p}\x01i\x04\x01@\x01\
+\x05bytes\x06\0\x07\x04\0\x1d[static]png-reader.read-bytes\x01\x08\x01h\x04\x01j\
+\x01y\x01\x01\x01@\x01\x04self\x09\0\x0a\x04\0\x18[method]png-reader.width\x01\x0b\
+\x04\0\x19[method]png-reader.height\x01\x0b\x04\0\x1b[method]png-reader.channels\
+\x01\x0b\x04\0\x19[method]png-reader.pixels\x01\x0b\x01i\x03\x01j\x01\x0c\x01\x01\
+\x01@\x01\x04self\x09\0\x0d\x04\0\x19[method]png-reader.finish\x01\x0e\x01i\x05\x01\
+@\0\0\x0f\x04\0\x17[constructor]png-writer\x01\x10\x01h\x05\x01j\x01\x06\x01\x01\
+\x01@\x02\x04self\x11\x05image\x0c\0\x12\x04\0\x1e[method]png-writer.write-bytes\
+\x01\x13\x04\x01\x1awasi:image/png@0.2.1-draft\x05\x04\x01B\x1e\x02\x03\x02\x01\x01\
+\x04\0\x0bimage-error\x03\0\0\x02\x03\x02\x01\x03\x04\0\x0cimage-buffer\x03\0\x02\
+\x04\0\x0bjpeg-reader\x03\x01\x04\0\x0bjpeg-writer\x03\x01\x01p}\x01i\x04\x01@\x01\
+\x05bytes\x06\0\x07\x04\0\x1e[static]jpeg-reader.read-bytes\x01\x08\x01h\x04\x01\
+j\x01y\x01\x01\x01@\x01\x04self\x09\0\x0a\x04\0\x19[method]jpeg-reader.width\x01\
+\x0b\x04\0\x1a[method]jpeg-reader.height\x01\x0b\x04\0\x1c[method]jpeg-reader.ch\
+annels\x01\x0b\x04\0\x1a[method]jpeg-reader.pixels\x01\x0b\x01i\x03\x01j\x01\x0c\
+\x01\x01\x01@\x01\x04self\x09\0\x0d\x04\0\x1a[method]jpeg-reader.finish\x01\x0e\x01\
+i\x05\x01@\0\0\x0f\x04\0\x18[constructor]jpeg-writer\x01\x10\x01h\x05\x01@\x02\x04\
+self\x11\x07qualityv\x01\0\x04\0\x1f[method]jpeg-writer.set-quality\x01\x12\x01j\
+\x01\x06\x01\x01\x01@\x02\x04self\x11\x05image\x0c\0\x13\x04\0\x1f[method]jpeg-w\
+riter.write-bytes\x01\x14\x04\x01\x1bwasi:image/jpeg@0.2.1-draft\x05\x05\x04\x01\
+\x1ewasi:image/imports@0.2.1-draft\x04\0\x0b\x0d\x01\0\x07imports\x03\0\0\0G\x09\
+producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.202.0\x10wit-bindgen-rus\
+t\x060.24.0";
 
 #[inline(never)]
 #[doc(hidden)]
 #[cfg(target_arch = "wasm32")]
 pub fn __link_custom_section_describing_imports() {
-  wit_bindgen::rt::maybe_link_cabi_realloc();
+    wit_bindgen::rt::maybe_link_cabi_realloc();
 }
 

@@ -1,36 +1,150 @@
-package wasi: serde@0.2.0;
+package wasi: image@0.2.1-draft;
 
 world imports {
     export errors;
-    export serialize;
+    export types;
+    export png;
+    export jpeg;
 }
 
 interface errors {
+    record encode-error {
+        message: string,
+    }
+    record decode-error {
+        message: string,
+    }
+    record invalid-operation {
+        operation: string,
+        reason: string,
+    }
     record custom-error {
         message: string,
     }
-    variant serialize-error {
+    variant image-error {
+        encode(encode-error),
+        decode(decode-error),
+        operation(invalid-operation),
         custom(custom-error),
     }
 }
 
-interface serialize {
-    use errors.{serialize-error};
-    resource serializer {
-        serialize-s8: func(value: s8) -> result<_, serialize-error>;
-        serialize-s16: func(value: s16) -> result<_, serialize-error>;
-        serialize-s32: func(value: s32) -> result<_, serialize-error>;
-        serialize-s64: func(value: s64) -> result<_, serialize-error>;
-        serialize-u8: func(value: u8) -> result<_, serialize-error>;
-        serialize-u16: func(value: u16) -> result<_, serialize-error>;
-        serialize-u32: func(value: u32) -> result<_, serialize-error>;
-        serialize-u64: func(value: u64) -> result<_, serialize-error>;
-        serialize-f32: func(value: f32) -> result<_, serialize-error>;
-        serialize-f64: func(value: f64) -> result<_, serialize-error>;
-        serialize-bool: func(value: bool) -> result<_, serialize-error>;
-        serialize-char: func(value: char) -> result<_, serialize-error>;
-        serialize-bytes: func(value: list<u8>) -> result<_, serialize-error>;
-        serialize-string: func(value: string) -> result<_, serialize-error>;
+interface types {
+    use errors.{image-error};
 
+    enum pixel-format {
+        luma8,
+        luma-a8,
+        luma16,
+        luma-a16,
+        luma32,
+        luma-a32,
+        rgb8,
+        rgb556,
+        rgba8,
+        rgb16,
+        rgba16,
+        rgb32,
+        rgba32,
     }
+
+    enum image-device {
+        cpu,
+        gpu,
+    }
+
+    /// A pointer of the mutable image buffer
+    resource image-buffer {
+        /// Count the width of the image
+        width: func() -> u32;
+        /// Count the height of the image
+        height: func() -> u32;
+        /// Count the number of channels
+        channels: func() -> u32;
+        /// Count the number of pixels
+        pixels: func() -> u32;
+        /// Get the pixel format
+        pixel-format: func() -> pixel-format;
+        /// Get the device
+        device: func() -> image-device;
+        /// Get the channal at index
+        get-channal: func(index: u32) -> image-buffer;
+        /// Get the red channal, return `none` if not exist
+        get-channal-red: func() -> option<image-buffer>;
+        /// Get the green channal, return `none` if not exist
+        get-channal-green: func() -> option<image-buffer>;
+        /// Get the blue channal, return `none` if not exist
+        get-channal-blue: func() -> option<image-buffer>;
+        /// Get the alpha channal, return `none` if not exist
+        get-channal-alpha: func() -> option<image-buffer>;
+
+        /// Crop the current image with origin and size, fill zeros if out of range
+        crop: func(x: u32, y: u32, w: u32, h: u32) -> image-buffer;
+        /// Flip the current image
+        flip: func(x: bool, y: bool) -> image-buffer;
+        /// Scale the current image
+        scale: func(w: f32, h: f32) -> image-buffer;
+
+        /// Clone the image
+        clone: func() -> image-buffer;
+        /// Recode the image
+        recode: func(pixel: pixel-format, device: image-device) -> result<image-buffer, image-error>;
+    }
+}
+
+
+interface png {
+    use errors.{image-error};
+    use types.{image-buffer};
+    resource png-reader {
+        /// Assume that this byte stream is a legal png image
+        read-bytes: static func(bytes: list<u8>) -> png-reader;
+        /// Get width from meta info, no need to decode image
+        width: func() -> result<u32, image-error>;
+        /// Get height from meta info, no need to decode image
+        height: func() -> result<u32, image-error>;
+        /// Get channels from meta info, no need to decode image
+        channels: func() -> result<u32, image-error>;
+        /// Get pixels from meta info, no need to decode image
+        pixels: func() -> result<u32, image-error>;
+        /// Finish decoding and take the image buffer
+        finish: func() -> result<image-buffer, image-error>;
+    }
+    resource png-writer {
+        /// Create a new png writer
+        constructor();
+        /// Write image to bytes
+        write-bytes: func(image: image-buffer) -> result<list<u8>, image-error>;
+    }
+}
+
+interface jpeg {
+    use errors.{image-error};
+    use types.{image-buffer};
+    resource jpeg-reader {
+        /// Assume that this byte stream is a legal jpeg image
+        read-bytes: static func(bytes: list<u8>) -> jpeg-reader;
+        /// Get width from meta info, no need to decode image
+        width: func() -> result<u32, image-error>;
+        /// Get height from meta info, no need to decode image
+        height: func() -> result<u32, image-error>;
+        /// Get channels from meta info, no need to decode image
+        channels: func() -> result<u32, image-error>;
+        /// Get pixels from meta info, no need to decode image
+        pixels: func() -> result<u32, image-error>;
+        /// Finish decoding and take the image buffer
+        finish: func() -> result<image-buffer, image-error>;
+    }
+    resource jpeg-writer {
+        /// Create a new jpeg writer
+        constructor();
+        /// Set the quality of the jpeg image
+        set-quality: func(quality: f32);
+        /// Write image to bytes
+        write-bytes: func(image: image-buffer) -> result<list<u8>, image-error>;
+    }
+}
+
+interface auto {
+
 }

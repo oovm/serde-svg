@@ -2,7 +2,7 @@
 resolver = "2"
 members = ["projects/*"]
 default-members = [
-    "projects/serde-svg",
+    "projects/wasi-serde",
 ]
 exclude = [
     "projects/.DS_Store",
