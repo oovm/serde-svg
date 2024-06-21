@@ -2,7 +2,7 @@
 #[derive(Debug, Copy, Clone)]
 pub enum HtmlError {
     ///
-    UnknownError
+    UnknownError,
 }
 ///
-pub type Result<T> = std::result::Result<T, HtmlError>;
+pub type Result<T> = core::result::Result<T, HtmlError>;

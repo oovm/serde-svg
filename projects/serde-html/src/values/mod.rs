@@ -1,6 +1,19 @@
-use std::hash::{Hash, Hasher};
+use alloc::{borrow::Cow, string::String};
+use core::{
+    hash::{Hash, Hasher},
+    num::TryFromIntError,
+};
 
 mod from;
+
+/// Values for attributes
+///
+/// Essentially a string, but using enum to reduce unnecessary allocation
+#[derive(Clone, Debug)]
+pub struct AttributePair {
+    key: Cow<'static, str>,
+    value: AttributeValue,
+}
 
 /// Values for attributes
 ///

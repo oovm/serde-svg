@@ -1,5 +1,3 @@
-use std::num::TryFromIntError;
-
 use super::*;
 
 impl From<()> for AttributeValue {
@@ -52,13 +50,11 @@ impl From<i16> for AttributeValue {
     }
 }
 
-
 impl From<i32> for AttributeValue {
     fn from(value: i32) -> Self {
         Self::Integer(value as i64)
     }
 }
-
 
 impl From<i64> for AttributeValue {
     fn from(value: i64) -> Self {
